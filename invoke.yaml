@@ -6,3 +6,4 @@ releaser:
   changelog: changelog.rst
   version: minchin\releaser\__init__.py
   test_command: "green -kq"
+  version_bump: none

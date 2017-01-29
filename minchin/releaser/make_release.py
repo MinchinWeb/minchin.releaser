@@ -1,4 +1,3 @@
-
 import os
 import re
 import shutil
@@ -31,6 +30,13 @@ ERROR_COLOR = colorama.Fore.RED
 WARNING_COLOR = colorama.Fore.YELLOW
 RESET_COLOR = colorama.Style.RESET_ALL
 
+valid_bumps = ['none',
+               'prerelease', 'dev', 'development',
+               'patch', 'bugfix',
+               'minor', 'feature',
+               'major', 'breaking']
+valid_bumps_str = ", & ".join([", ".join(valid_bumps[:-1]), valid_bumps[-1]])
+
 
 def server_url(server_name):
     server_name = server_name.lower()
@@ -40,10 +46,41 @@ def server_url(server_name):
         return(r"https://pypi.python.org/pypi")
 
 
-def update_version_number(ctx, update_level='patch'):
-    """Update version number
+def update_version_number(ctx, bump=None):
+    """
+    Update version number
 
-    Returns a semantic_version object"""
+    Returns a two semantic_version objects (the old version and the current
+    version).
+    """
+
+    if bump is not None and bump.lower() not in valid_bumps:
+        print(textwrap.fill("[{}WARN{}] bump level, as provided on command "
+                            "line, is not valid. Trying value given in "
+                            "configruation file. Valid values are {}."
+                            .format(WARNING_COLOR, RESET_COLOR,
+                                    valid_bumps_str),
+                            width=text.get_terminal_size().columns - 1,
+                            subsequent_indent=' '*7))
+        bump = None
+    else:
+        update_level = bump
+
+    if bump is None:
+        update_level = ctx.releaser.version_bump
+
+    if update_level is None or update_level.lower() in ['none', '']:
+        update_level = None
+    elif update_level is not None:
+        update_level = update_level.lower()
+    if update_level in ['dev', 'development']:
+        update_level = 'prerelease'
+    elif update_level in ['bugfix']:
+        update_level = 'patch'
+    elif update_level in ['feature']:
+        update_level = 'minor'
+    elif update_level in ['breaking']:
+        update_level = 'major'
 
     """Find current version"""
     temp_file = Path(ctx.releaser.version).resolve().parent / ("~" + Path(ctx.releaser.version).name)
@@ -54,31 +91,38 @@ def update_version_number(ctx, update_level='patch'):
                 if version_matches:
                     bare_version_str = version_matches.groups(0)[0]
                     if semantic_version.validate(bare_version_str):
-                        current_version = Version(bare_version_str)
-                        print("{}Current version is {}".format(" "*4, current_version))
+                        old_version = Version(bare_version_str)
+                        print("{}Current version is {}".format(" "*4,
+                                                               old_version))
                     else:
-                        current_version = Version.coerce(bare_version_str)
-                        if not text.query_yes_quit("{}I think the version is {}. Use it?".format(" "*4, current_version), default="yes"):
-                            exit(colorama.Fore.RED + 'Please set an initial version number to continue')
+                        old_version = Version.coerce(bare_version_str)
+                        if not text.query_yes_quit("{}I think the version is {}. Use it?".format(" "*4, old_version), default="yes"):
+                            exit('[{}ERROR{}] Please set an initial version '
+                                 'number to continue.'.format(ERROR_COLOR,
+                                                              RESET_COLOR))
 
                     """Determine new version number"""
-                    if update_level is 'major':
-                        current_version = current_version.next_major()
-                    elif update_level is 'minor':
-                        current_version = current_version.next_minor()
-                    elif update_level is 'patch':
-                        current_version = current_version.next_patch()
-                    elif update_level is 'prerelease':
-                        if not current_version.prerelease:
-                            current_version = current_version.next_patch()
+                    if update_level == 'major':
+                        current_version = old_version.next_major()
+                    elif update_level == 'minor':
+                        current_version = old_version.next_minor()
+                    elif update_level == 'patch':
+                        current_version = old_version.next_patch()
+                    elif update_level == 'prerelease':
+                        if not old_version.prerelease:
+                            current_version = old_version.next_patch()
                             current_version.prerelease = ('dev', )
+                        else:
+                            current_version = old_version
                     elif update_level is None:
                         # don't update version
-                        pass
+                        current_version = old_version
                     else:
-                        exit(colorama.Fore.RED + 'Cannot update version in {} mode'.format(update_level))
+                        exit('[{}ERROR{}] Cannot update version in {} mode'
+                             .format(ERROR_COLOR, RESET_COLOR, update_level))
 
-                    print("{}New version is     {}".format(" "*4, current_version))
+                    print("{}New version is     {}".format(" "*4,
+                                                           current_version))
 
                     """Update version number"""
                     line = '__version__ = "{}"\n'.format(current_version)
@@ -86,7 +130,7 @@ def update_version_number(ctx, update_level='patch'):
         #print('', file=g)  # add a blank line at the end of the file
     shutil.copyfile(str(temp_file), str(Path(ctx.releaser.version).resolve()))
     os.remove(str(temp_file))
-    return(current_version)
+    return(old_version, current_version)
 
 
 def build_distribution():
@@ -176,13 +220,16 @@ def check_existance(to_check, name, config_key=None, relative_to=None,
             sys.exit(1)
 
 
-@task
-def make_release(ctx):
+@task(optional=['bump'],
+      help={'bump': 'What level to bump the version by. Setting this '
+                    'overrides the value set in your configuration. '
+                    'Valid bump levels are {}.'.format(valid_bumps_str)})
+def make_release(ctx, bump=None):
     '''Make and upload the release.'''
 
     make_release_version = __version__
     colorama.init()
-    text.title("Minchin 'Make Release' for Python v{}".format(make_release_version))
+    text.title("Minchin 'Make Release' for Python Projects v{}".format(make_release_version))
 
     print()
     text.subtitle("Configuration")
@@ -252,8 +299,9 @@ def make_release(ctx):
     print()
 
     text.subtitle("Update Version Number")
-    #new_version = update_version_number(ctx)
+    old_version, new_version = update_version_number(ctx, bump)
     print()
+
     text.subtitle("Add Release to Changelog")
     print()
     text.subtitle("Build Documentation")
