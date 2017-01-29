@@ -284,6 +284,7 @@ def make_release(ctx, bump=None):
     except AttributeError:
         print("[{}WARN{}] test command not configured. Use key "
               "'releaser.test_command'.".format(WARNING_COLOR, RESET_COLOR))
+        cmd_none = 'none'
     if cmd_none != 'none':
         result = invoke.run(ctx.releaser.test_command, warn=True)
         if not result.ok:
@@ -303,9 +304,37 @@ def make_release(ctx, bump=None):
     print()
 
     text.subtitle("Add Release to Changelog")
+    if old_version == new_version:
+        print("[{}WARN{}] Version hasn't changed. Not updating Changelog."
+              .format(WARNING_COLOR, RESET_COLOR))
+    else:
+        print("[{}WARN{}] I can't do this yet, but you probably should."
+              "           Not updating Changelog."
+              .format(WARNING_COLOR, RESET_COLOR))
     print()
+
     text.subtitle("Build Documentation")
+    try:
+        cmd_none = (ctx.releaser.doc_command).lower()
+    except (AttributeError, KeyError):
+        print("[{}WARN{}] documentation generation command not configured.\n"
+              "           Use key 'releaser.doc_command'."
+              .format(WARNING_COLOR, RESET_COLOR))
+        cmd_none = 'none'
+    if cmd_none != 'none':
+        result = invoke.run(ctx.releaser.doc_command, warn=True)
+        if not result.ok:
+            print("[{}WARN{}] the documentation generation reported errors."
+                  .format(WARNING_COLOR, RESET_COLOR))
+            ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
+                                      default="quit")
+            if ans is False:
+                sys.exit(1)
+    else:
+        print('[{}WARN{}] No test command given.'.format(WARNING_COLOR,
+                                                         RESET_COLOR))
     print()
+
     ans = text.query_yes_quit('All good and ready to go?')
     if ans is False:
         sys.exit(1)
