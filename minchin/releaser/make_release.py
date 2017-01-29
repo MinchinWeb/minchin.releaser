@@ -28,6 +28,7 @@ list_match_re = re.compile(r"(?P<leading>[ \t]*)(?P<mark>[-\*+]) +:\w+:")
 
 ERROR_COLOR = colorama.Fore.RED
 WARNING_COLOR = colorama.Fore.YELLOW
+GOOD_COLOR = colorama.Fore.GREEN
 RESET_COLOR = colorama.Style.RESET_ALL
 
 valid_bumps = ['none',
@@ -134,9 +135,16 @@ def update_version_number(ctx, bump=None):
 
 
 def build_distribution():
-    build_status = subprocess.check_call(['python', 'setup.py', 'sdist', 'bdist_egg', 'bdist_wheel'])
-    if build_status is not 0:
-        exit(colorama.Fore.RED + 'Something broke tyring to package your code...')
+    result = invoke.run('python setup.py sdist bdist_egg bdist_wheel',
+                        warn=True, hide=True)
+    if result.ok:
+        print("[{}GOOD{}] Distubution built without errors."
+              .format(GOOD_COLOR, RESET_COLOR))
+    else:
+        print('[{}ERROR{}] Something broke tyring to package your '
+              'code...'.format(ERROR_COLOR, RESET_COLOR))
+        print(result.stderr)
+        sys.exit(1)
 
 
 def other_dependancies(server, environment):
