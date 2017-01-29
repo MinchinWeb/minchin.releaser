@@ -232,7 +232,25 @@ def make_release(ctx):
     print()
 
     text.subtitle("Run Tests")
+    try:
+        cmd_none = (ctx.releaser.test_command).lower()
+    except AttributeError:
+        print("[{}WARN{}] test command not configured. Use key "
+              "'releaser.test_command'.".format(WARNING_COLOR, RESET_COLOR))
+    if cmd_none != 'none':
+        result = invoke.run(ctx.releaser.test_command, warn=True)
+        if not result.ok:
+            print("[{}WARN{}] the test suite reported errors."
+                  .format(WARNING_COLOR, RESET_COLOR))
+            ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
+                                      default="quit")
+            if ans is False:
+                sys.exit(1)
+    else:
+        print('[{}WARN{}] No test command given.'.format(WARNING_COLOR,
+                                                         RESET_COLOR))
     print()
+
     text.subtitle("Update Version Number")
     #new_version = update_version_number(ctx)
     print()
