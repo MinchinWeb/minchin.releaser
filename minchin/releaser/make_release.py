@@ -9,10 +9,13 @@ from pathlib import Path
 
 import colorama
 import git
+import invoke
+import isort
 import semantic_version
 from invoke import task
-from minchin import text
 from semantic_version import Version
+
+from minchin import text
 
 from . import __version__
 
@@ -147,24 +150,30 @@ def check_local_install(version, ext, server="local"):
         exit('{}{} install {} broken{}'.format(colorama.Fore.RED, server, ext, colorama.Style.RESET_ALL))
 
 
-def check_existance(to_check, name, config_key=None, relative_to=None):
-    if config_key is None:
-        config_key = 'releaser.' + name
-    my_check = Path(to_check).resolve()
-    if my_check.exists():
-        if relative_to is None:
-            printed_path = str(my_check)
-        else:
-            printed_path = str(my_check.relative_to(relative_to))
-            if printed_path != '.':
-                printed_path = '.' + os.sep + printed_path
-        print("{: <14} -> {}".format(name, printed_path))
+def check_existance(to_check, name, config_key=None, relative_to=None,
+                    allow_undefined=False):
+    if allow_undefined and (to_check is None or to_check.lower() == 'none'):
+        print("{: <14} -> {}UNDEFINED{}".format(name, WARNING_COLOR,
+                                                RESET_COLOR))
         return
     else:
-        print("[{}ERROR{}] '{}', as given, doesn't exist. For configruation "
-              "key '{}', was given: {}".format(ERROR_COLOR, RESET_COLOR, name,
-                                               config_key, to_check))
-        sys.exit(1)
+        if config_key is None:
+            config_key = 'releaser.' + name
+        my_check = Path(to_check).resolve()
+        if my_check.exists():
+            if relative_to is None:
+                printed_path = str(my_check)
+            else:
+                printed_path = str(my_check.relative_to(relative_to))
+                if printed_path != '.':
+                    printed_path = '.' + os.sep + printed_path
+            print("{: <14} -> {}".format(name, printed_path))
+            return
+        else:
+            print("[{}ERROR{}] '{}', as given, doesn't exist. For configruation "
+                  "key '{}', was given: {}".format(ERROR_COLOR, RESET_COLOR, name,
+                                                   config_key, to_check))
+            sys.exit(1)
 
 
 @task
@@ -180,8 +189,8 @@ def make_release(ctx):
     check_existance(ctx.releaser.here, "base dir", "releaser.here")
     here = Path(ctx.releaser.here).resolve()
     check_existance(ctx.releaser.source, "source", "releaser.source", here)
-    check_existance(ctx.releaser.test, "test dir", "releaser.test", here)
-    check_existance(ctx.releaser.docs, "doc dir", "releaser.doc", here)
+    check_existance(ctx.releaser.test, "test dir", "releaser.test", here, True)
+    check_existance(ctx.releaser.docs, "doc dir", "releaser.doc", here, True)
     check_existance(ctx.releaser.version, "version file", "releaser.version", here)
 
     print()
@@ -212,7 +221,16 @@ def make_release(ctx):
     print()
 
     text.subtitle("Sort Import Statements")
+    for f in Path(ctx.releaser.source).resolve().glob('**/*.py'):
+        isort.SortImports(f)
+        print('.', end="")
+    if ctx.releaser.test is not None:
+        for f in Path(ctx.releaser.test).resolve().glob('**/*.py'):
+            isort.SortImports(f)
+            print('.', end="")
+    print(' Done!')
     print()
+
     text.subtitle("Run Tests")
     print()
     text.subtitle("Update Version Number")
