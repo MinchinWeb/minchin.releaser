@@ -1,0 +1,7 @@
+releaser:
+  here: .
+  docs: .
+  test: .
+  source: minchin
+  changelog: changelog.rst
+  version: minchin\releaser\__init__.py
