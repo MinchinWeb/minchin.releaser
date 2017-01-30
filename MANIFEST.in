@@ -1,0 +1,10 @@
+include minchin/releaser/*.py
+include minchin/releaser/test/*.py
+include readme.rst
+include changelog.rst
+include LICENSE.txt
+include MANIFEST.in
+include setup.py
+include tasks.py
+include setup.cfg
+include invoke.yaml
