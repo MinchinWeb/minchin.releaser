@@ -45,7 +45,7 @@ INSTALL_REQUIRES = [
     'colorama',
     'invoke',
     'isort',
-    'minchin.text>=5.1.0',
+    'minchin.text>5.0.1',
     'pip',
     'semantic_version',
     'setuptools>=18.0',

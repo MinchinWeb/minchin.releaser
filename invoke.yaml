@@ -1,4 +1,5 @@
 releaser:
+  module_name: minchin.releaser
   here: .
   docs: .
   test: None
@@ -7,3 +8,6 @@ releaser:
   version: minchin\releaser\__init__.py
   test_command: "green -kq"
   version_bump: none
+  extra_packages:
+    local:
+      - git+https://github.com/MinchinWeb/minchin.text.git#egg=minchin.text

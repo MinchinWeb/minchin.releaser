@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-import subprocess
 import sys
 import textwrap
 from pathlib import Path
@@ -141,39 +140,65 @@ def build_distribution():
         print("[{}GOOD{}] Distubution built without errors."
               .format(GOOD_COLOR, RESET_COLOR))
     else:
-        print('[{}ERROR{}] Something broke tyring to package your '
+        print('[{}ERROR{}] Something broke trying to package your '
               'code...'.format(ERROR_COLOR, RESET_COLOR))
         print(result.stderr)
         sys.exit(1)
 
 
-def other_dependancies(server, environment):
+def other_dependancies(ctx, server, environment):
     """
     Installs things that need to be in place before installing the main package
     """
-    print('  ** Other Dependancides, based on server', server, '**')
-    server = server.lower()
-    # Pillow is not on TestPyPI
-    if server is "local":
-        pass
-    elif server in ["testpypi", "pypitest"]:
-        # these are packages not available on the test server, so install them
-        # off the regular pypi server
-        print("  **Install Pillow**")
-        subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
-    elif server in ["pypi"]:
-        print("  **Install Pillow**")
-        subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
-    else:
-        print("  **Nothing more to install**")
+    print('** Other Dependancides, based on server', server, '**')
+    if 'extra_packages' in ctx.releaser:
+        server = server.lower()
+        extra_pkgs = []
+        if server == "local":
+            if 'local' in ctx.releaser.extra_packages:
+                extra_pkgs.extend(ctx.releaser.extra_packages.local)
+        elif server in ["testpypi", "pypitest"]:
+            # these are packages not available on the test server, so install them
+            # off the regular pypi server
+            if 'test' in ctx.releaser.extra_packages:
+                extra_pkgs.extend(ctx.releaser.extra_packages.test)
+            # subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
+        elif server in ["pypi"]:
+            if 'pypi' in ctx.releaser.extra_packages:
+                extra_pkgs.extend(ctx.releaser.extra_packages.pypi)
+            # subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
+        else:
+            print("** Nothing more to install **")
+
+        for pkg in extra_pkgs:
+            result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3}'
+                                .format(os.sep, environment, '.exe', pkg),
+                                hide=True)
+            if result.ok:
+                print('{}[{}GOOD{}] Installed {}'.format("", GOOD_COLOR,
+                                                         RESET_COLOR, pkg))
+            else:
+                print('{}[{}WARN{}] Something broke trying to install '
+                      'package: {}'.format("", WARNING_COLOR, RESET_COLOR,
+                                           pkg))
+                print(result.stderr)
+                sys.exit(1)
 
 
-def check_local_install(version, ext, server="local"):
-    all_files = list(dist_directory().glob('*.{}'.format(ext)))
+def check_local_install(ctx, version, ext, server="local"):
+    """
+    Uploads a distibution to PyPI, and then tests to see if I can download and
+    install it.
+    """
+    here = Path(ctx.releaser.here).resolve()
+    dist_dir = here / 'dist'
+
+    all_files = list(dist_dir.glob('*.{}'.format(ext)))
     the_file = all_files[0]
     for f in all_files[1:]:
         if f.stat().st_mtime > the_file.stat().st_mtime:
             the_file = f
+            # this is the latest generated file of the given version
 
     environment = 'env-{}-{}-{}'.format(version, ext, server)
     if server == "local":
@@ -181,29 +206,54 @@ def check_local_install(version, ext, server="local"):
     else:
         # upload to server
         print("  **Uploading**")
-        subprocess.call(['twine', 'upload', str(the_file), '-r', server])
+        result = invoke.run('twine upload {} -r {}'.format(the_file, server))
+        if result.failed:
+            print('[{}ERROR{}] Something broke trying to upload your package.'
+                  .format(ERROR_COLOR, RESET_COLOR))
+            print(result.stderr)
+            sys.exit(1)
 
-    if (here_directory() / environment).exists():
-        shutil.rmtree(environment)  # remove directory if it exists
-    subprocess.call(['python', '-m', 'venv', environment])
+    # remove directory if it exists
+    if (here / 'env' / environment).exists():
+        shutil.rmtree('env' + os.sep + environment)
+    invoke.run('python -m venv env{}{}'.format(os.sep, environment))
+    other_dependancies(ctx, server, environment)
     if server == "local":
-        subprocess.call([environment + '\\Scripts\\pip.exe', 'install', str(the_file), '--no-cache'], shell=True)
+        result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3} --no-cache'
+                            .format(os.sep, environment, '.exe', the_file),
+                            hide=True)
     else:
-        other_dependancies(server, environment)
-        print("  **Install from server**")
-        subprocess.call([environment + '\\Scripts\\pip.exe', 'install', '-i', server_url(server), module_name() + "==" + str(version), '--no-cache'], shell=True)
-    print("  **Test version of install package**")
-    test_version = subprocess.check_output([environment + '\\Scripts\\python.exe', '-c', "exec(\"\"\"import {0}\\nprint({0}.__version__)\\n\"\"\")".format(module_name())], shell=True)
-    test_version = test_version.decode('ascii').strip()
+        #print("  **Install from server**")
+        result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install -i {3} '
+                            '{4}=={5} --no-cache'
+                            .format(os.sep, environment, '.exe',
+                                    server_url(server),
+                                    ctx.releaser.module_name, version),
+                            hide=True)
+        if result.failed:
+            print('[{}ERROR{}] Something broke trying to install your package.'
+                  .format(ERROR_COLOR, RESET_COLOR))
+            print(result.stderr)
+            sys.exit(1)
+    print("** Test version of installed package **")
+
+    result = invoke.run('env{0}{1}{0}Scripts{0}python{2} -c '
+                        'exec("""import {3}\\nprint({3}.__version__)""")'
+                        .format(os.sep, environment, '.exe',
+                                (ctx.releaser.module_name).strip()))
+    test_version = result.stdout.decode('ascii').strip()
     # print(test_version, type(test_version), type(expected_version))
     if (Version(test_version) == version):
-        print('{}{} install {} works!{}'.format(colorama.Fore.GREEN, server, ext, colorama.Style.RESET_ALL))
+        print('{}{} install {} works!{}'.format(GOOD_COLOR, server, ext,
+                                                RESET_COLOR))
     else:
-        exit('{}{} install {} broken{}'.format(colorama.Fore.RED, server, ext, colorama.Style.RESET_ALL))
+        exit('{}{} install {} broken{}'.format(ERROR_COLOR, server, ext,
+                                               RESET_COLOR))
 
 
 def check_existance(to_check, name, config_key=None, relative_to=None,
                     allow_undefined=False):
+    """Determine whether a file or folder actually exists."""
     if allow_undefined and (to_check is None or to_check.lower() == 'none'):
         print("{: <14} -> {}UNDEFINED{}".format(name, WARNING_COLOR,
                                                 RESET_COLOR))
@@ -228,11 +278,19 @@ def check_existance(to_check, name, config_key=None, relative_to=None,
             sys.exit(1)
 
 
-@task(optional=['bump'],
+@task(optional=['bump', 'skip-isort', 'skip-local', 'skip-test', 'skip-pypi'],
       help={'bump': 'What level to bump the version by. Setting this '
                     'overrides the value set in your configuration. '
-                    'Valid bump levels are {}.'.format(valid_bumps_str)})
-def make_release(ctx, bump=None):
+                    'Valid bump levels are {}.'.format(valid_bumps_str),
+            'skip-isort': 'Skip applying isort to your files.',
+            'skip-local': 'Skip testing by installing from local build '
+                          'distribution.',
+            'skip-test': 'Skip testing by uploading and installing to test '
+                         'PyPI server.',
+            'skip-pypi': 'Skip testing by uploading and installing to (the '
+                         'real) PyPI server.'})
+def make_release(ctx, bump=None, skip_local=False, skip_test=False,
+                 skip_pypi=False, skip_isort=False):
     '''Make and upload the release.'''
 
     make_release_version = __version__
@@ -276,14 +334,17 @@ def make_release(ctx, bump=None):
     print()
 
     text.subtitle("Sort Import Statements")
-    for f in Path(ctx.releaser.source).resolve().glob('**/*.py'):
-        isort.SortImports(f)
-        print('.', end="")
-    if ctx.releaser.test is not None:
-        for f in Path(ctx.releaser.test).resolve().glob('**/*.py'):
+    if not skip_isort:
+        for f in Path(ctx.releaser.source).resolve().glob('**/*.py'):
             isort.SortImports(f)
             print('.', end="")
-    print(' Done!')
+        if ctx.releaser.test is not None:
+            for f in Path(ctx.releaser.test).resolve().glob('**/*.py'):
+                isort.SortImports(f)
+                print('.', end="")
+        print(' Done!')
+    else:
+        print("[{}WARN{}] Skipped!".format(WARNING_COLOR, RESET_COLOR))
     print()
 
     text.subtitle("Run Tests")
@@ -350,14 +411,18 @@ def make_release(ctx, bump=None):
     text.subtitle("Build Distributions")
     build_distribution()
 
-    for server in [
-                    "local",
-                    "testpypi",
-                    "pypi",
-                  ]:
+    server_list = []
+    if not skip_local:
+        server_list.append('local')
+    if not skip_test:
+        server_list.append('testpypi')
+    if not skip_pypi:
+        server_list.append('pypi')
+
+    for server in server_list:
         for file_format in ["tar.gz", "whl"]:
             print()
             text.subtitle("Test {} Build {}".format(file_format, server))
-            check_local_install(new_version, file_format, server)
+            check_local_install(ctx, new_version, file_format, server)
 
     # new_version = update_version_number('prerelease')
