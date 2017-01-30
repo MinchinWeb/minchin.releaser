@@ -134,5 +134,5 @@ setuptools.setup(
     extras_require=EXTRA_REQUIRES,
     platforms='any',
     classifiers=CLASSIFIERS,
-    namespace_packages=['minchin'],
+    namespace_packages=['minchin', ],
 )

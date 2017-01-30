@@ -1,10 +1,12 @@
 Changelog
 =========
 
+- :release:`0.3.1 <2017-01-29>`
+- :bug:`-` always open and write version file with UTF-8 codec
 - :release:`0.3.0 <2017-01-29>`
-- :feature:`-` test install-ability of modele
+- :feature:`-` test install-ability of module
 - :feature:`-` run documentation generation
-- :feature:`-` allow overriding version bump level from commandline
+- :feature:`-` allow overriding version bump level from command line
 - :feature:`-` sort import statements
 - :feature:`-` run test suite
 - :release:`0.2.2 <2016-11-28>`

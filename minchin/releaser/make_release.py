@@ -84,8 +84,8 @@ def update_version_number(ctx, bump=None):
 
     """Find current version"""
     temp_file = Path(ctx.releaser.version).resolve().parent / ("~" + Path(ctx.releaser.version).name)
-    with temp_file.open(mode='w') as g:
-        with Path(ctx.releaser.version).resolve().open(mode='r') as f:
+    with temp_file.open(mode='w', encoding='utf-8') as g:
+        with Path(ctx.releaser.version).resolve().open(mode='r', encoding='utf-8') as f:
             for line in f:
                 version_matches = bare_version_re.match(line)
                 if version_matches:
@@ -241,7 +241,7 @@ def check_local_install(ctx, version, ext, server="local"):
                         'exec("""import {3}\\nprint({3}.__version__)""")'
                         .format(os.sep, environment, '.exe',
                                 (ctx.releaser.module_name).strip()))
-    test_version = result.stdout.decode('ascii').strip()
+    test_version = result.stdout.strip()
     # print(test_version, type(test_version), type(expected_version))
     if (Version(test_version) == version):
         print('{}{} install {} works!{}'.format(GOOD_COLOR, server, ext,
@@ -377,7 +377,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         print("[{}WARN{}] Version hasn't changed. Not updating Changelog."
               .format(WARNING_COLOR, RESET_COLOR))
     else:
-        print("[{}WARN{}] I can't do this yet, but you probably should."
+        print("[{}WARN{}] I can't do this yet, but you probably should.\n"
               "           Not updating Changelog."
               .format(WARNING_COLOR, RESET_COLOR))
     print()
