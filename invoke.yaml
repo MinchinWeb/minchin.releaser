@@ -9,5 +9,5 @@ releaser:
   test_command: "green -kq"
   version_bump: none
   extra_packages:
-    local:
-      - git+https://github.com/MinchinWeb/minchin.text.git#egg=minchin.text
+    test:
+      - minchin.text
