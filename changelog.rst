@@ -2,6 +2,8 @@ Changelog
 =========
 
 - :release:`0.3.1 <2017-01-29>`
+- :bug:`-` don't blow up if uploading fails (this is common when we have
+  to retry our upload)
 - :bug:`-` always open and write version file with UTF-8 codec
 - :release:`0.3.0 <2017-01-29>`
 - :feature:`-` test install-ability of module

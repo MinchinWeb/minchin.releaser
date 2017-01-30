@@ -206,12 +206,18 @@ def check_local_install(ctx, version, ext, server="local"):
     else:
         # upload to server
         print("  **Uploading**")
-        result = invoke.run('twine upload {} -r {}'.format(the_file, server))
+        result = invoke.run('twine upload {} -r {}'.format(the_file, server),
+                            warn=True)
         if result.failed:
-            print('[{}ERROR{}] Something broke trying to upload your package.'
-                  .format(ERROR_COLOR, RESET_COLOR))
+            print(textwrap.fill("[{}ERRO{}] Something broke trying to upload "
+                                "your package.\nThis will be the case if you "
+                                "have already uploaded it before. To upload "
+                                "again, use a different version number "
+                                "(including a '+' suffix)."
+                                .format(ERROR_COLOR, RESET_COLOR),
+                  width=text.get_terminal_size().columns - 1,
+                  subsequent_indent=' '*7))
             print(result.stderr)
-            sys.exit(1)
 
     # remove directory if it exists
     if (here / 'env' / environment).exists():
