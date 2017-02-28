@@ -10,7 +10,7 @@ import git  # packaged as 'gitpython'
 import invoke
 import isort
 import semantic_version
-from invoke import task
+from invoke import task, Program
 from semantic_version import Version
 
 from minchin import text
@@ -18,6 +18,8 @@ from minchin import text
 from . import __version__
 
 # also requires `twine`
+
+program = Program(version=__version__)
 
 # assumed Invoke configuration file points to Windows Shell
 

@@ -146,4 +146,9 @@ setuptools.setup(
     platforms='any',
     classifiers=CLASSIFIERS,
     namespace_packages=['minchin', ],
+    entry_points={
+        'console_scripts': [
+                'minchin-releaser = minchin.releaser.make_release:program.run',
+                ]
+    },
 )
