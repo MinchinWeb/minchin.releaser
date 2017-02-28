@@ -1,0 +1,8 @@
+colorama
+invoke
+isort
+minchin.text > 5.0.1
+semantic_version
+twine
+wheel
+gitpython

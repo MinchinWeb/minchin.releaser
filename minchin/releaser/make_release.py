@@ -6,7 +6,7 @@ import textwrap
 from pathlib import Path
 
 import colorama
-import git
+import git  # packaged as 'gitpython'
 import invoke
 import isort
 import semantic_version
@@ -29,6 +29,11 @@ ERROR_COLOR = colorama.Fore.RED
 WARNING_COLOR = colorama.Fore.YELLOW
 GOOD_COLOR = colorama.Fore.GREEN
 RESET_COLOR = colorama.Style.RESET_ALL
+
+# on Windows, this should be '.exe', but we get away with setting it to
+# blank as Windows will (typically) run .exe files without specifying the
+# file extension
+PIP_EXT = ''
 
 valid_bumps = ['none',
                'prerelease', 'dev', 'development',
@@ -162,17 +167,15 @@ def other_dependancies(ctx, server, environment):
             # off the regular pypi server
             if 'test' in ctx.releaser.extra_packages:
                 extra_pkgs.extend(ctx.releaser.extra_packages.test)
-            # subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
         elif server in ["pypi"]:
             if 'pypi' in ctx.releaser.extra_packages:
                 extra_pkgs.extend(ctx.releaser.extra_packages.pypi)
-            # subprocess.call([environment + '\\Scripts\\pip.exe', 'install', 'Pillow'], shell=True)
         else:
             print("** Nothing more to install **")
 
         for pkg in extra_pkgs:
             result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3}'
-                                .format(os.sep, environment, '.exe', pkg),
+                                .format(os.sep, environment, PIP_EXT, pkg),
                                 hide=True)
             if result.ok:
                 print('{}[{}GOOD{}] Installed {}'.format("", GOOD_COLOR,
@@ -187,7 +190,7 @@ def other_dependancies(ctx, server, environment):
 
 def check_local_install(ctx, version, ext, server="local"):
     """
-    Uploads a distibution to PyPI, and then tests to see if I can download and
+    Uploads a distribution to PyPI, and then tests to see if I can download and
     install it.
     """
     here = Path(ctx.releaser.here).resolve()
@@ -205,7 +208,7 @@ def check_local_install(ctx, version, ext, server="local"):
         pass
     else:
         # upload to server
-        print("  **Uploading**")
+        print("** Uploading to server **")
         result = invoke.run('twine upload {} -r {}'.format(the_file, server),
                             warn=True)
         if result.failed:

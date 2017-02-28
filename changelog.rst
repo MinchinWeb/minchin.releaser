@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :feature:`-` consolidate requirements to ``requirements.in``, and generate
+  other requirement lists from here
 - :release:`0.3.1 <2017-01-29>`
 - :bug:`-` don't blow up if uploading fails (this is common when we have
   to retry our upload)

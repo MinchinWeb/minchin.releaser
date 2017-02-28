@@ -25,6 +25,26 @@ def find_meta(*meta_file_parts, meta_key):
     raise RuntimeError("Unable to find __{}__ string.".format(meta_key))
 
 
+def read_requirements(*parts):
+    """
+    Given a requirements.txt (or similar style file), returns a list of
+    requirements.
+
+    Assumes anything after a single '#' on a line is a comment, and ignores
+    empty lines.
+    """
+    requirements = []
+    for line in read(*parts).splitlines():
+        new_line = re.sub('(\s*)?#.*$',  # the space immediately before the
+                                         # hash mark, the hash mark, and
+                                         # anything that follows it
+                          '',  # replace with a blank string
+                          line)
+        if new_line:  # i.e. we have a non-zero-length string
+            requirements.append(new_line)
+    return requirements
+
+
 ##############################################################################
 #                          PACKAGE METADATA                                  #
 ##############################################################################
@@ -41,21 +61,12 @@ LICENSE      = find_meta(*META_PATH, meta_key='license')
 
 PACKAGES     = setuptools.find_packages()
 
-INSTALL_REQUIRES = [
-    'colorama',
-    'invoke',
-    'isort',
-    'minchin.text>5.0.1',
-    'pip',
-    'semantic_version',
-    'setuptools>=18.0',
-    'twine',
-    'wheel',
-    'gitpython',
-]
+# pull from requirements.IN, requirements.TXT is generated from this
+INSTALL_REQUIRES = read_requirements('requirements.in')
 
 EXTRA_REQUIRES = {
     'build': [
+        'pip-tools',
     ],
     'docs': [
         # 'sphinx >= 1.4',  # theme requires at least 1.4
@@ -94,9 +105,9 @@ CLASSIFIERS = [
     # 'Programming Language :: Python :: 2.7',
     # 'Programming Language :: Python :: 2 :: Only',
     'Programming Language :: Python :: 3',
-    #'Programming Language :: Python :: 3.2',
-    #'Programming Language :: Python :: 3.3',
-    #'Programming Language :: Python :: 3.4',
+    # 'Programming Language :: Python :: 3.2',
+    # 'Programming Language :: Python :: 3.3',
+    # 'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     # 'Programming Language :: Python :: 3 :: Only',
@@ -128,7 +139,7 @@ setuptools.setup(
     description=SHORT_DESC,
     long_description=LONG_DESC,
     packages=PACKAGES,
-    package_data={'': ['readme.rst', 'LICENSE.txt']},
+    package_data={'': ['readme.rst', 'changelog.rst', 'LICENSE.txt']},
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRA_REQUIRES,
