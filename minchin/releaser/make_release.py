@@ -8,12 +8,12 @@ from pathlib import Path
 import colorama
 import git  # packaged as 'gitpython'
 import invoke
-import isort
 import semantic_version
 from invoke import task
+from minchin import text
 from semantic_version import Version
 
-from minchin import text
+import isort
 
 from . import __version__
 
@@ -35,36 +35,36 @@ RESET_COLOR = colorama.Style.RESET_ALL
 # file extension
 PIP_EXT = ''
 
-valid_bumps = ['none',
+VALID_BUMPS = ['none',
                'prerelease', 'dev', 'development',
                'patch', 'bugfix',
                'minor', 'feature',
                'major', 'breaking']
-valid_bumps_str = ", & ".join([", ".join(valid_bumps[:-1]), valid_bumps[-1]])
+VALID_BUMPS_STR = ", & ".join([", ".join(VALID_BUMPS[:-1]), VALID_BUMPS[-1]])
 
 
 def server_url(server_name):
+    """Determine the server URL."""
     server_name = server_name.lower()
     if server_name in ["testpypi", "pypitest"]:
-        return(r"https://testpypi.python.org/pypi")
+        return r"https://testpypi.python.org/pypi"
     elif server_name in ["pypi", ]:
-        return(r"https://pypi.python.org/pypi")
+        return r"https://pypi.python.org/pypi"
 
 
 def update_version_number(ctx, bump=None):
     """
-    Update version number
+    Update version number.
 
     Returns a two semantic_version objects (the old version and the current
     version).
     """
-
-    if bump is not None and bump.lower() not in valid_bumps:
+    if bump is not None and bump.lower() not in VALID_BUMPS:
         print(textwrap.fill("[{}WARN{}] bump level, as provided on command "
                             "line, is not valid. Trying value given in "
-                            "configruation file. Valid values are {}."
+                            "configuration file. Valid values are {}."
                             .format(WARNING_COLOR, RESET_COLOR,
-                                    valid_bumps_str),
+                                    VALID_BUMPS_STR),
                             width=text.get_terminal_size().columns - 1,
                             subsequent_indent=' '*7))
         bump = None
@@ -87,7 +87,7 @@ def update_version_number(ctx, bump=None):
     elif update_level in ['breaking']:
         update_level = 'major'
 
-    """Find current version"""
+    # Find current version
     temp_file = Path(ctx.releaser.version).resolve().parent / ("~" + Path(ctx.releaser.version).name)
     with temp_file.open(mode='w', encoding='utf-8') as g:
         with Path(ctx.releaser.version).resolve().open(mode='r', encoding='utf-8') as f:
@@ -101,12 +101,15 @@ def update_version_number(ctx, bump=None):
                                                                old_version))
                     else:
                         old_version = Version.coerce(bare_version_str)
-                        if not text.query_yes_quit("{}I think the version is {}. Use it?".format(" "*4, old_version), default="yes"):
+                        if not text.query_yes_quit("{}I think the version is {}."
+                                                   " Use it?".format(" "*4,
+                                                                     old_version),
+                                                   default="yes"):
                             exit('[{}ERROR{}] Please set an initial version '
                                  'number to continue.'.format(ERROR_COLOR,
                                                               RESET_COLOR))
 
-                    """Determine new version number"""
+                    # Determine new version number
                     if update_level == 'major':
                         current_version = old_version.next_major()
                     elif update_level == 'minor':
@@ -129,7 +132,7 @@ def update_version_number(ctx, bump=None):
                     print("{}New version is     {}".format(" "*4,
                                                            current_version))
 
-                    """Update version number"""
+                    # Update version number
                     line = '__version__ = "{}"\n'.format(current_version)
                 print(line, file=g, end="")
         #print('', file=g)  # add a blank line at the end of the file
@@ -139,10 +142,11 @@ def update_version_number(ctx, bump=None):
 
 
 def build_distribution():
+    """Build distributions of the code."""
     result = invoke.run('python setup.py sdist bdist_egg bdist_wheel',
                         warn=True, hide=True)
     if result.ok:
-        print("[{}GOOD{}] Distubution built without errors."
+        print("[{}GOOD{}] Distribution built without errors."
               .format(GOOD_COLOR, RESET_COLOR))
     else:
         print('[{}ERROR{}] Something broke trying to package your '
@@ -151,11 +155,9 @@ def build_distribution():
         sys.exit(1)
 
 
-def other_dependancies(ctx, server, environment):
-    """
-    Installs things that need to be in place before installing the main package
-    """
-    print('** Other Dependancides, based on server', server, '**')
+def other_dependencies(ctx, server, environment):
+    """Install things that need to be in place before installing the main package."""
+    print('** Other Dependencies, based on server', server, '**')
     if 'extra_packages' in ctx.releaser:
         server = server.lower()
         extra_pkgs = []
@@ -190,6 +192,8 @@ def other_dependancies(ctx, server, environment):
 
 def check_local_install(ctx, version, ext, server="local"):
     """
+    Upload and install works?
+
     Uploads a distribution to PyPI, and then tests to see if I can download and
     install it.
     """
@@ -218,15 +222,15 @@ def check_local_install(ctx, version, ext, server="local"):
                                 "again, use a different version number "
                                 "(including a '+' suffix)."
                                 .format(ERROR_COLOR, RESET_COLOR),
-                  width=text.get_terminal_size().columns - 1,
-                  subsequent_indent=' '*7))
+                                width=text.get_terminal_size().columns - 1,
+                                subsequent_indent=' '*7))
             print(result.stderr)
 
     # remove directory if it exists
     if (here / 'env' / environment).exists():
         shutil.rmtree('env' + os.sep + environment)
     invoke.run('python -m venv env{}{}'.format(os.sep, environment))
-    other_dependancies(ctx, server, environment)
+    other_dependencies(ctx, server, environment)
     if server == "local":
         result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3} --no-cache'
                             .format(os.sep, environment, '.exe', the_file),
@@ -252,7 +256,7 @@ def check_local_install(ctx, version, ext, server="local"):
                                 (ctx.releaser.module_name).strip()))
     test_version = result.stdout.strip()
     # print(test_version, type(test_version), type(expected_version))
-    if (Version(test_version) == version):
+    if Version(test_version) == version:
         print('{}{} install {} works!{}'.format(GOOD_COLOR, server, ext,
                                                 RESET_COLOR))
     else:
@@ -260,7 +264,7 @@ def check_local_install(ctx, version, ext, server="local"):
                                                RESET_COLOR))
 
 
-def check_existance(to_check, name, config_key=None, relative_to=None,
+def check_existence(to_check, name, config_key=None, relative_to=None,
                     allow_undefined=False):
     """Determine whether a file or folder actually exists."""
     if allow_undefined and (to_check is None or to_check.lower() == 'none'):
@@ -290,7 +294,7 @@ def check_existance(to_check, name, config_key=None, relative_to=None,
 @task(optional=['bump', 'skip-isort', 'skip-local', 'skip-test', 'skip-pypi'],
       help={'bump': 'What level to bump the version by. Setting this '
                     'overrides the value set in your configuration. '
-                    'Valid bump levels are {}.'.format(valid_bumps_str),
+                    'Valid bump levels are {}.'.format(VALID_BUMPS_STR),
             'skip-isort': 'Skip applying isort to your files.',
             'skip-local': 'Skip testing by installing from local build '
                           'distribution.',
@@ -300,26 +304,25 @@ def check_existance(to_check, name, config_key=None, relative_to=None,
                          'real) PyPI server.'})
 def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                  skip_pypi=False, skip_isort=False):
-    '''Make and upload the release.'''
-
+    """Make and upload the release."""
     make_release_version = __version__
     colorama.init()
     text.title("Minchin 'Make Release' for Python Projects v{}".format(make_release_version))
 
     print()
     text.subtitle("Configuration")
-    check_existance(ctx.releaser.here, "base dir", "releaser.here")
+    check_existence(ctx.releaser.here, "base dir", "releaser.here")
     here = Path(ctx.releaser.here).resolve()
-    check_existance(ctx.releaser.source, "source", "releaser.source", here)
-    check_existance(ctx.releaser.test, "test dir", "releaser.test", here, True)
-    check_existance(ctx.releaser.docs, "doc dir", "releaser.doc", here, True)
-    check_existance(ctx.releaser.version, "version file", "releaser.version", here)
+    check_existence(ctx.releaser.source, "source", "releaser.source", here)
+    check_existence(ctx.releaser.test, "test dir", "releaser.test", here, True)
+    check_existence(ctx.releaser.docs, "doc dir", "releaser.doc", here, True)
+    check_existence(ctx.releaser.version, "version file", "releaser.version", here)
 
     print()
     text.subtitle("Git -- Clean directory?")
     try:
         repo = git.Repo(str(here))
-    except git.exc.InvalidGitRepoposityError:
+    except git.exc.InvalidGitRepositoryError:
         repo = None
         print(textwrap.fill('[{}WARN{}] base directory does not appear to be '
                             'a valid git repo.'.format(WARNING_COLOR,
