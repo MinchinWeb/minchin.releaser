@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` warn if releasing with a pre-release version number
 - :feature:`-` allow specifying bump level at run time
 - :feature:`-` check (select) configuration keys for existence before proceeding
   with the rest of the script

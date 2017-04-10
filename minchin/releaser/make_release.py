@@ -142,6 +142,17 @@ def update_version_number(ctx, bump=None):
                         exit('[{}ERROR{}] Cannot update version in {} mode'
                              .format(ERROR_COLOR, RESET_COLOR, update_level))
 
+                    # warn on pre-release versions
+                    if current_version.prerelease:
+                        ans = text.query_yes_quit("[{}WARN{}] Current version "
+                                                  "is a pre-release version. "
+                                                  "Continue anyway?"
+                                                  .format(WARNING_COLOR,
+                                                          RESET_COLOR),
+                                                  default="quit")
+                        if ans is False:
+                            sys.exit(1)
+
                     print("{}New version is     {}".format(" "*4,
                                                            current_version))
 
