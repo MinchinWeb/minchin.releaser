@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :feature:`-` check (select) configuration keys for existence before proceeding
+  with the rest of the script
 - :feature:`-` consolidate requirements to ``requirements.in``, and generate
   other requirement lists from here
 - :release:`0.3.1 <2017-01-29>`

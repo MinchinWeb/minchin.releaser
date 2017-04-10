@@ -311,11 +311,36 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
 
     print()
     text.subtitle("Configuration")
+    # check for valid configuration
+    if 'releaser' not in ctx.keys():
+        print("[{}ERROR{}] missing configuration for 'releaser'"
+              .format(ERROR_COLOR, RESET_COLOR))
+        sys.exit(1)
+        # TODO: offer to create configuration file
+    if ctx.releaser is None:
+        print("[{}ERROR{}] empty configuration for 'releaser' found"
+              .format(ERROR_COLOR, RESET_COLOR))
+        sys.exit(1)
+        # TODO: offer to create configuration file
+
+    # TODO: allow use of default values
+    for my_key in ['here',
+                   'source',
+                   'test',
+                   'docs',
+                   'version',
+                  ]:
+        if my_key not in ctx.releaser.keys():
+            print("[{}ERROR{}] missing configuration key 'releaser.{}'"
+                  .format(ERROR_COLOR, RESET_COLOR, my_key))
+            sys.exit(1)
+
     check_existence(ctx.releaser.here, "base dir", "releaser.here")
+
     here = Path(ctx.releaser.here).resolve()
     check_existence(ctx.releaser.source, "source", "releaser.source", here)
     check_existence(ctx.releaser.test, "test dir", "releaser.test", here, True)
-    check_existence(ctx.releaser.docs, "doc dir", "releaser.doc", here, True)
+    check_existence(ctx.releaser.docs, "doc dir", "releaser.docs", here, True)
     check_existence(ctx.releaser.version, "version file", "releaser.version", here)
 
     print()
