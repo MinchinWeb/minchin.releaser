@@ -61,7 +61,7 @@ def update_version_number(ctx, bump=None):
     """
     if bump is not None and bump.lower() not in VALID_BUMPS:
         print(textwrap.fill("[{}WARN{}] bump level, as provided on command "
-                            "line, is not valid. Trying value given in "
+                            "line, is invalid. Trying value given in "
                             "configuration file. Valid values are {}."
                             .format(WARNING_COLOR, RESET_COLOR,
                                     VALID_BUMPS_STR),
@@ -70,22 +70,6 @@ def update_version_number(ctx, bump=None):
         bump = None
     else:
         update_level = bump
-
-    if bump is None:
-        update_level = ctx.releaser.version_bump
-
-    if update_level is None or update_level.lower() in ['none', '']:
-        update_level = None
-    elif update_level is not None:
-        update_level = update_level.lower()
-    if update_level in ['dev', 'development']:
-        update_level = 'prerelease'
-    elif update_level in ['bugfix']:
-        update_level = 'patch'
-    elif update_level in ['feature']:
-        update_level = 'minor'
-    elif update_level in ['breaking']:
-        update_level = 'major'
 
     # Find current version
     temp_file = Path(ctx.releaser.version).resolve().parent / ("~" + Path(ctx.releaser.version).name)
@@ -109,14 +93,43 @@ def update_version_number(ctx, bump=None):
                                  'number to continue.'.format(ERROR_COLOR,
                                                               RESET_COLOR))
 
+                    # if bump level not defined by command line options
+                    if bump is None:
+                        try:
+                            update_level = ctx.releaser.version_bump
+                        except AttributeError:
+                            print("[{}WARN{}] bump level not defined in "
+                                    "configuration. Use key "
+                                    "'releaser.version_bump'"
+                                    .format(WARNING_COLOR, RESET_COLOR))
+                            print(textwrap.fill("{}Valid bump levels are: "
+                                                "{}. Or use 'quit' to exit."
+                                                .format(" "*7,
+                                                        VALID_BUMPS_STR),
+                                                width=text.get_terminal_size().columns - 1,
+                                                subsequent_indent=' '*7))
+                            my_input = input("What bump level to use? ")
+                            if my_input.lower() in ['quit', 'q', 'exit']:
+                                sys.exit(0)
+                            elif my_input.lower() not in VALID_BUMPS:
+                                exit("[{}ERROR{}] invalid bump level provided. "
+                                     "Exiting...".format(ERROR_COLOR, RESET_COLOR))
+                            else:
+                                update_level = my_input
+
                     # Determine new version number
-                    if update_level == 'major':
+                    if update_level is None or update_level.lower() in ['none']:
+                        update_level = None
+                    elif update_level is not None:
+                        update_level = update_level.lower()
+
+                    if update_level in ['breaking', 'major']:
                         current_version = old_version.next_major()
-                    elif update_level == 'minor':
+                    elif update_level in ['feature', 'minor']:
                         current_version = old_version.next_minor()
-                    elif update_level == 'patch':
+                    elif update_level in ['bugfix', 'patch']:
                         current_version = old_version.next_patch()
-                    elif update_level == 'prerelease':
+                    elif update_level in ['dev', 'development', 'prerelease']:
                         if not old_version.prerelease:
                             current_version = old_version.next_patch()
                             current_version.prerelease = ('dev', )
