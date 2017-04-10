@@ -220,6 +220,9 @@ def check_local_install(ctx, version, ext, server="local"):
 
     Uploads a distribution to PyPI, and then tests to see if I can download and
     install it.
+
+    Returns:
+        str: string summazing operation
     """
     here = Path(ctx.releaser.here).resolve()
     dist_dir = here / 'dist'
@@ -281,11 +284,13 @@ def check_local_install(ctx, version, ext, server="local"):
     test_version = result.stdout.strip()
     # print(test_version, type(test_version), type(expected_version))
     if Version(test_version) == version:
-        print('{}{} install {} works!{}'.format(GOOD_COLOR, server, ext,
-                                                RESET_COLOR))
+        results = '{}{} install {} works!{}'.format(GOOD_COLOR, server, ext,
+                                                    RESET_COLOR)
     else:
-        exit('{}{} install {} broken{}'.format(ERROR_COLOR, server, ext,
-                                               RESET_COLOR))
+        results = '{}{} install {} broken{}'.format(ERROR_COLOR, server, ext,
+                                                    RESET_COLOR)
+    print(results)
+    return results
 
 
 def check_existence(to_check, name, config_key=None, relative_to=None,
@@ -480,10 +485,16 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     if not skip_pypi:
         server_list.append('pypi')
 
+    success_list = []
     for server in server_list:
         for file_format in ["tar.gz", "whl"]:
             print()
             text.subtitle("Test {} Build {}".format(file_format, server))
-            check_local_install(ctx, new_version, file_format, server)
+            s = check_local_install(ctx, new_version, file_format, server)
+            success_list.append(s)
+
+    text.subtitle("Install Test Summary")
+    for line in success_list:
+        print(line)
 
     # new_version = update_version_number('prerelease')
