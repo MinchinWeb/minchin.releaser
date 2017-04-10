@@ -52,9 +52,14 @@ def server_url(server_name):
         return r"https://pypi.python.org/pypi"
 
 
-def update_version_number(ctx, bump=None):
+def update_version_number(ctx, bump=None, ignore_prerelease=False):
     """
     Update version number.
+
+    Args:
+        bump (str): bump level
+        ignore_prerelease (bool): ignore the fact that our new version is a
+            prerelease, or issue a warning
 
     Returns a two semantic_version objects (the old version and the current
     version).
@@ -143,7 +148,7 @@ def update_version_number(ctx, bump=None):
                              .format(ERROR_COLOR, RESET_COLOR, update_level))
 
                     # warn on pre-release versions
-                    if current_version.prerelease:
+                    if current_version.prerelease and not ignore_prerelease:
                         ans = text.query_yes_quit("[{}WARN{}] Current version "
                                                   "is a pre-release version. "
                                                   "Continue anyway?"
@@ -497,4 +502,6 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     for line in success_list:
         print(line)
 
-    # new_version = update_version_number('prerelease')
+    text.subtitle("Bump Version to Pre-release?")
+    if text.query_yes_no("Bump version to pre-release now?"):
+        old_version, new_version = update_version_number(ctx, 'prerelease', True)

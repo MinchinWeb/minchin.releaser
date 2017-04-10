@@ -5,6 +5,7 @@ Changelog
 - :feature:`-` allow specifying bump level at run time
 - :feature:`-` check (select) configuration keys for existence before proceeding
   with the rest of the script
+- :feature:`-` offer to bump version to pre-release at end of process
 - :feature:`-` provide summary of test installs
 - :feature:`-` consolidate requirements to ``requirements.in``, and generate
   other requirement lists from here
