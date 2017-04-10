@@ -114,7 +114,7 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
                                                 width=text.get_terminal_size().columns - 1,
                                                 subsequent_indent=' '*7))
                             my_input = input("What bump level to use? ")
-                            if my_input.lower() in ['quit', 'q', 'exit']:
+                            if my_input.lower() in ["quit", "q", "exit", "y"]:
                                 sys.exit(0)
                             elif my_input.lower() not in VALID_BUMPS:
                                 exit("[{}ERROR{}] invalid bump level provided. "
@@ -248,15 +248,16 @@ def check_local_install(ctx, version, ext, server="local"):
         result = invoke.run('twine upload {} -r {}'.format(the_file, server),
                             warn=True)
         if result.failed:
-            print(textwrap.fill("[{}ERRO{}] Something broke trying to upload "
+            print(textwrap.fill("[{}ERROR{}] Something broke trying to upload "
                                 "your package.\nThis will be the case if you "
                                 "have already uploaded it before. To upload "
                                 "again, use a different version number "
-                                "(including a '+' suffix)."
+                                "(or a different build by including a '+' "
+                                "suffix to your version number)."
                                 .format(ERROR_COLOR, RESET_COLOR),
                                 width=text.get_terminal_size().columns - 1,
-                                subsequent_indent=' '*7))
-            print(result.stderr)
+                                subsequent_indent=' '*8))
+            # print(result.stderr)
 
     # remove directory if it exists
     if (here / 'env' / environment).exists():
@@ -319,10 +320,9 @@ def check_existence(to_check, name, config_key=None, relative_to=None,
             print("{: <14} -> {}".format(name, printed_path))
             return
         else:
-            print("[{}ERROR{}] '{}', as given, doesn't exist. For configruation "
-                  "key '{}', was given: {}".format(ERROR_COLOR, RESET_COLOR, name,
-                                                   config_key, to_check))
-            sys.exit(1)
+            exit("[{}ERROR{}] '{}', as given, doesn't exist. For configuration "
+                 "key '{}', was given: {}".format(ERROR_COLOR, RESET_COLOR, name,
+                                                  config_key, to_check))
 
 
 @task(optional=['bump', 'skip-isort', 'skip-local', 'skip-test', 'skip-pypi'],
@@ -347,14 +347,12 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     text.subtitle("Configuration")
     # check for valid configuration
     if 'releaser' not in ctx.keys():
-        print("[{}ERROR{}] missing configuration for 'releaser'"
-              .format(ERROR_COLOR, RESET_COLOR))
-        sys.exit(1)
+        exit("[{}ERROR{}] missing configuration for 'releaser'"
+             .format(ERROR_COLOR, RESET_COLOR))
         # TODO: offer to create configuration file
     if ctx.releaser is None:
-        print("[{}ERROR{}] empty configuration for 'releaser' found"
-              .format(ERROR_COLOR, RESET_COLOR))
-        sys.exit(1)
+        exit("[{}ERROR{}] empty configuration for 'releaser' found"
+             .format(ERROR_COLOR, RESET_COLOR))
         # TODO: offer to create configuration file
 
     # TODO: allow use of default values
@@ -363,11 +361,11 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                    'test',
                    'docs',
                    'version',
+                   'module_name',
                   ]:
         if my_key not in ctx.releaser.keys():
-            print("[{}ERROR{}] missing configuration key 'releaser.{}'"
-                  .format(ERROR_COLOR, RESET_COLOR, my_key))
-            sys.exit(1)
+            exit("[{}ERROR{}] missing configuration key 'releaser.{}'"
+                 .format(ERROR_COLOR, RESET_COLOR, my_key))
 
     check_existence(ctx.releaser.here, "base dir", "releaser.here")
 
@@ -471,8 +469,8 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
             if ans is False:
                 sys.exit(1)
     else:
-        print('[{}WARN{}] No test command given.'.format(WARNING_COLOR,
-                                                         RESET_COLOR))
+        print('[{}WARN{}] No docmentation generation command given.'
+              .format(WARNING_COLOR, RESET_COLOR))
     print()
 
     ans = text.query_yes_quit('All good and ready to go?')
