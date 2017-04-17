@@ -48,7 +48,7 @@ def read_requirements(*parts):
 ##############################################################################
 #                          PACKAGE METADATA                                  #
 ##############################################################################
-META_PATH = ['minchin', 'releaser', '__init__.py']
+META_PATH = ['minchin', 'releaser', 'constants.py']
 
 NAME         = find_meta(*META_PATH, meta_key='title').lower()
 VERSION      = find_meta(*META_PATH, meta_key='version')
@@ -95,8 +95,8 @@ CLASSIFIERS = [
     # 'Development Status :: 1 - Planning',
     # 'Development Status :: 2 - Pre-Alpha',
     # 'Development Status :: 3 - Alpha',
-    # 'Development Status :: 4 - Beta',
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 4 - Beta',
+    # 'Development Status :: 5 - Production/Stable',
     # 'Development Status :: 6 - Mature',
     # 'Development Status :: 7 - Inactive',
 

@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :feature:`-` include vendorized version of ``minchin.text`` to ease with
+  install issues
+- :feature:`-` add ``vendorize`` script
 - :feature:`-` warn if releasing with a pre-release version number
 - :feature:`-` allow specifying bump level at run time
 - :feature:`-` check (select) configuration keys for existence before proceeding

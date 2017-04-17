@@ -8,6 +8,7 @@
 .coverage.*
 .eggs/
 .installed.cfg
+.vscode
 __pycache__/
 build/
 coverage.xml
@@ -28,3 +29,9 @@ var/
 # add main directory back in
 !minchin/releaser/
 !minchin/releaser/*.py
+!minchin/releaser/vendorize.py
+
+# vendorized items
+requirements-vendor.in
+requirements-vendor.txt
+minchin/releaser/_vendor

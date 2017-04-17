@@ -5,9 +5,16 @@ releaser:
   test: None
   source: minchin
   changelog: changelog.rst
-  version: minchin\releaser\__init__.py
+  version: minchin\releaser\constants.py
   test_command: "green -kq"
   version_bump: none
   extra_packages:
     test:
       - minchin.text
+  vendor_dest: minchin\releaser\_vendor
+  vendor_packages:
+    "minchin.text":
+      src: ..\minchin.text\minchin
+      dest: .
+      requirements: ..\minchin.text\requirements.in
+  vendor_override_src: vendor_src

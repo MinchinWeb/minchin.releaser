@@ -8,14 +8,22 @@ from pathlib import Path
 import colorama
 import git  # packaged as 'gitpython'
 import invoke
+import isort
 import semantic_version
 from invoke import task
-from minchin import text
 from semantic_version import Version
 
-import isort
+from .constants import (ERROR_COLOR, GOOD_COLOR, PIP_EXT, RESET_COLOR,
+                        WARNING_COLOR, __version__)
+from .util import check_configuration, check_existence
+from .vendorize import vendorize
 
-from . import __version__
+try:
+    from minchin import text
+except ImportError:
+    from ._vendor import text
+
+
 
 # also requires `twine`
 
@@ -25,15 +33,6 @@ version_re = re.compile(r"__version__ = [\"\']{1,3}(?P<major>\d+)\.(?P<minor>\d+
 bare_version_re = re.compile(r"__version__ = [\"\']{1,3}([\.\dA-Za-z+-]*)[\"\']{1,3}")
 list_match_re = re.compile(r"(?P<leading>[ \t]*)(?P<mark>[-\*+]) +:\w+:")
 
-ERROR_COLOR = colorama.Fore.RED
-WARNING_COLOR = colorama.Fore.YELLOW
-GOOD_COLOR = colorama.Fore.GREEN
-RESET_COLOR = colorama.Style.RESET_ALL
-
-# on Windows, this should be '.exe', but we get away with setting it to
-# blank as Windows will (typically) run .exe files without specifying the
-# file extension
-PIP_EXT = ''
 
 VALID_BUMPS = ['none',
                'prerelease', 'dev', 'development',
@@ -104,9 +103,9 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
                             update_level = ctx.releaser.version_bump
                         except AttributeError:
                             print("[{}WARN{}] bump level not defined in "
-                                    "configuration. Use key "
-                                    "'releaser.version_bump'"
-                                    .format(WARNING_COLOR, RESET_COLOR))
+                                  "configuration. Use key "
+                                  "'releaser.version_bump'"
+                                  .format(WARNING_COLOR, RESET_COLOR))
                             print(textwrap.fill("{}Valid bump levels are: "
                                                 "{}. Or use 'quit' to exit."
                                                 .format(" "*7,
@@ -299,32 +298,6 @@ def check_local_install(ctx, version, ext, server="local"):
     return results
 
 
-def check_existence(to_check, name, config_key=None, relative_to=None,
-                    allow_undefined=False):
-    """Determine whether a file or folder actually exists."""
-    if allow_undefined and (to_check is None or to_check.lower() == 'none'):
-        print("{: <14} -> {}UNDEFINED{}".format(name, WARNING_COLOR,
-                                                RESET_COLOR))
-        return
-    else:
-        if config_key is None:
-            config_key = 'releaser.' + name
-        my_check = Path(to_check).resolve()
-        if my_check.exists():
-            if relative_to is None:
-                printed_path = str(my_check)
-            else:
-                printed_path = str(my_check.relative_to(relative_to))
-                if printed_path != '.':
-                    printed_path = '.' + os.sep + printed_path
-            print("{: <14} -> {}".format(name, printed_path))
-            return
-        else:
-            exit("[{}ERROR{}] '{}', as given, doesn't exist. For configuration "
-                 "key '{}', was given: {}".format(ERROR_COLOR, RESET_COLOR, name,
-                                                  config_key, to_check))
-
-
 @task(optional=['bump', 'skip-isort', 'skip-local', 'skip-test', 'skip-pypi'],
       help={'bump': 'What level to bump the version by. Setting this '
                     'overrides the value set in your configuration. '
@@ -345,35 +318,25 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
 
     print()
     text.subtitle("Configuration")
-    # check for valid configuration
-    if 'releaser' not in ctx.keys():
-        exit("[{}ERROR{}] missing configuration for 'releaser'"
-             .format(ERROR_COLOR, RESET_COLOR))
-        # TODO: offer to create configuration file
-    if ctx.releaser is None:
-        exit("[{}ERROR{}] empty configuration for 'releaser' found"
-             .format(ERROR_COLOR, RESET_COLOR))
-        # TODO: offer to create configuration file
-
-    # TODO: allow use of default values
-    for my_key in ['here',
-                   'source',
-                   'test',
-                   'docs',
-                   'version',
-                   'module_name',
-                  ]:
-        if my_key not in ctx.releaser.keys():
-            exit("[{}ERROR{}] missing configuration key 'releaser.{}'"
-                 .format(ERROR_COLOR, RESET_COLOR, my_key))
+    extra_keys = ['here',
+                  'source',
+                  'test',
+                  'docs',
+                  'version',
+                  'module_name',
+                 ]
+    check_configuration(ctx, 'releaser', extra_keys)
 
     check_existence(ctx.releaser.here, "base dir", "releaser.here")
 
     here = Path(ctx.releaser.here).resolve()
-    check_existence(ctx.releaser.source, "source", "releaser.source", here)
-    check_existence(ctx.releaser.test, "test dir", "releaser.test", here, True)
-    check_existence(ctx.releaser.docs, "doc dir", "releaser.docs", here, True)
-    check_existence(ctx.releaser.version, "version file", "releaser.version", here)
+    try:
+        check_existence(ctx.releaser.source, "source", "releaser.source", here)
+        check_existence(ctx.releaser.test, "test dir", "releaser.test", here, True)
+        check_existence(ctx.releaser.docs, "doc dir", "releaser.docs", here, True)
+        check_existence(ctx.releaser.version, "version file", "releaser.version", here)
+    except FileNotFoundError:
+        sys.exit(1)
 
     print()
     text.subtitle("Git -- Clean directory?")
@@ -415,6 +378,10 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     else:
         print("[{}WARN{}] Skipped!".format(WARNING_COLOR, RESET_COLOR))
     print()
+
+    if "vendor_packages" in ctx.releaser.keys():
+        text.subtitle("Vendorize!")
+        vendorize(ctx, internal_call=True)
 
     text.subtitle("Run Tests")
     try:
