@@ -59,7 +59,7 @@ AUTHOR_EMAIL = find_meta(*META_PATH, meta_key='email')
 URL          = find_meta(*META_PATH, meta_key='url')
 LICENSE      = find_meta(*META_PATH, meta_key='license')
 
-PACKAGES     = setuptools.find_packages()
+PACKAGES     = setuptools.find_packages(exclude="vendor_src")
 
 # pull from requirements.IN, requirements.TXT is generated from this
 INSTALL_REQUIRES = read_requirements('requirements.in')
