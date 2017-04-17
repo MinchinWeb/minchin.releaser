@@ -14,6 +14,10 @@ class Test_Setup(unittest.TestCase):
         self.assertIsNotNone(minchin.releaser.__version__)
 
 
+# test the requirements reader to ensure that it handled comments, and
+# commented lines and that a second comment towards the end of the line
+
+
 def main():
     unittest.main()
 

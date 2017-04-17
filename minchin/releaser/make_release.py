@@ -195,10 +195,12 @@ def other_dependencies(ctx, server, environment):
         elif server in ["testpypi", "pypitest"]:
             # these are packages not available on the test server, so install them
             # off the regular pypi server
-            if 'test' in ctx.releaser.extra_packages:
+            if 'test' in ctx.releaser.extra_packages and \
+                                ctx.releaser.extra_packages.test is not None:
                 extra_pkgs.extend(ctx.releaser.extra_packages.test)
         elif server in ["pypi"]:
-            if 'pypi' in ctx.releaser.extra_packages:
+            if 'pypi' in ctx.releaser.extra_packages and \
+                                ctx.releaser.extra_packages.pypi is not None:
                 extra_pkgs.extend(ctx.releaser.extra_packages.pypi)
         else:
             print("** Nothing more to install **")
