@@ -10,7 +10,14 @@ releaser:
   version_bump: none
   extra_packages:
     test:
-      - minchin.text
+      - invoke
+      - isort
+      - semantic_version
+      - wheel
+      - pkginfo
+      - gitdb
+    pypi:
+      - invoke
   vendor_dest: minchin\releaser\_vendor
   vendor_packages:
     "minchin.text":
