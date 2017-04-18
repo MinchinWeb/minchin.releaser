@@ -185,11 +185,10 @@ def build_distribution():
 
 def other_dependencies(ctx, server, environment):
     """Install things that need to be in place before installing the main package."""
-    print('** Other Dependencies, based on server', server, '**')
     if 'extra_packages' in ctx.releaser:
         server = server.lower()
         extra_pkgs = []
-        if server == "local":
+        if server in ["local"]:
             if 'local' in ctx.releaser.extra_packages:
                 extra_pkgs.extend(ctx.releaser.extra_packages.local)
         elif server in ["testpypi", "pypitest"]:
@@ -205,6 +204,9 @@ def other_dependencies(ctx, server, environment):
         else:
             print("** Nothing more to install **")
 
+        if extra_pkgs:
+            print('** Other Dependencies, based on server', server, '**')
+
         for pkg in extra_pkgs:
             result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3}'
                                 .format(os.sep, environment, PIP_EXT, pkg),
@@ -213,9 +215,8 @@ def other_dependencies(ctx, server, environment):
                 print('{}[{}GOOD{}] Installed {}'.format("", GOOD_COLOR,
                                                          RESET_COLOR, pkg))
             else:
-                print('{}[{}WARN{}] Something broke trying to install '
-                      'package: {}'.format("", WARNING_COLOR, RESET_COLOR,
-                                           pkg))
+                print('{}[{}ERROR{}] Something broke trying to install '
+                      'package: {}'.format("", ERROR_COLOR, RESET_COLOR, pkg))
                 print(result.stderr)
                 sys.exit(1)
 
@@ -445,9 +446,11 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     ans = text.query_yes_quit('All good and ready to go?')
     if ans is False:
         sys.exit(1)
+    print()
 
     text.subtitle("Build Distributions")
     build_distribution()
+    print()
 
     server_list = []
     if not skip_local:
@@ -460,14 +463,18 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     success_list = []
     for server in server_list:
         for file_format in ["tar.gz", "whl"]:
-            print()
             text.subtitle("Test {} Build {}".format(file_format, server))
             s = check_local_install(ctx, new_version, file_format, server)
             success_list.append(s)
+            print()
 
     text.subtitle("Install Test Summary")
     for line in success_list:
         print(line)
+    print()
+
+    # git commit
+    # git tag
 
     text.subtitle("Bump Version to Pre-release?")
     if text.query_yes_no("Bump version to pre-release now?"):
