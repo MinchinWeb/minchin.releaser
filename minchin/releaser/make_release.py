@@ -506,6 +506,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         if _create_tag:
             print("Creating Git tag for version {}".format(new_version))
             repo.create_tag(new_version)
+        print()
 
     text.subtitle("Bump Version to Pre-release?")
     if text.query_yes_no("Bump version to pre-release now?"):
