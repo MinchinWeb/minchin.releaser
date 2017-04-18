@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` offer to create Git Tag
 - :release:`0.4.2 <2017-04-17>`
 - :feature:`-` include vendorized version of ``minchin.text`` to ease with
   install issues

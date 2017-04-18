@@ -315,11 +315,10 @@ def check_local_install(ctx, version, ext, server="local"):
 def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                  skip_pypi=False, skip_isort=False):
     """Make and upload the release."""
-    make_release_version = __version__
     colorama.init()
-    text.title("Minchin 'Make Release' for Python Projects v{}".format(make_release_version))
-
+    text.title("Minchin 'Make Release' for Python Projects v{}".format(__version__))
     print()
+
     text.subtitle("Configuration")
     extra_keys = ['here',
                   'source',
@@ -340,8 +339,8 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         check_existence(ctx.releaser.version, "version file", "releaser.version", here)
     except FileNotFoundError:
         sys.exit(1)
-
     print()
+
     text.subtitle("Git -- Clean directory?")
     try:
         repo = git.Repo(str(here))
@@ -366,6 +365,8 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                                       default="quit")
             if ans is False:
                 sys.exit(1)
+        else:
+            print("[{}GOOD{}] Clean Git repo.".format(GOOD_COLOR, RESET_COLOR))
     print()
 
     text.subtitle("Sort Import Statements")
@@ -474,7 +475,37 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     print()
 
     # git commit
-    # git tag
+
+    if repo is not None:
+        text.subtitle("Create Git Tag")
+        _create_tag = True
+
+        # don't duplicate existing tag
+        tags = repo.tags
+        for tag in tags:
+            if tag.name == new_version:
+                print("[{}WARN{}] Git tag for version {} already exists. "
+                      "Skipping.".format(WARNING_COLOR, RESET_COLOR, tag.name))
+                _create_tag = False
+                break
+
+        # warn on pre-release versions
+        if new_version.prerelease:
+            print("[{}WARN{}] Currently a pre-release version.")
+            # True = yes, False = Quit
+            ans = text.query_yes_no(' '*7 + 'Create Git tag anyway?',
+                                    default="no")
+            if ans is False:
+                _create_tag = False
+
+        ans = text.query_yes_no('Create Git tag for version {}?'.format(new_version),
+                                default="no")
+        if ans is False:
+            _create_tag = False
+
+        if _create_tag:
+            print("Creating Git tag for version {}".format(new_version))
+            repo.create_tag(new_version)
 
     text.subtitle("Bump Version to Pre-release?")
     if text.query_yes_no("Bump version to pre-release now?"):
