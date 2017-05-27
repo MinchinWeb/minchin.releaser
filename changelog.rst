@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :release:`0.5.1 <2017-05-27>`
+- :bug:`-` allow twine to pick the PyPI server to upload to
+- :bug:`-` fixes in vendorizing ``minchin.text``, particularly its requirements
 - :release:`0.5.0 <2017-04-18>`
 - :feature:`-` offer to create Git Tag
 - :release:`0.4.2 <2017-04-17>`
