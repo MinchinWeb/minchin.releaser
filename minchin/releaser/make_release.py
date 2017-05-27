@@ -388,6 +388,9 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         vendorize(ctx, internal_call=True)
 
     text.subtitle("Run Tests")
+    # check setup.py
+    # python setup.py -r -s
+    # https://stackoverflow.com/questions/30328259/what-does-python-setup-py-check-actually-do
     try:
         cmd_none = (ctx.releaser.test_command).lower()
     except AttributeError:
@@ -420,6 +423,8 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         print("[{}WARN{}] I can't do this yet, but you probably should.\n"
               "           Not updating Changelog."
               .format(WARNING_COLOR, RESET_COLOR))
+        # https://github.com/bitprophet/releases/blob/master/releases/util.py#L21
+        # https://github.com/pyinvoke/invocations/blob/master/invocations/packaging/release.py#L362
     print()
 
     text.subtitle("Build Documentation")
