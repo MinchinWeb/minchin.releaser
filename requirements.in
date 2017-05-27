@@ -2,6 +2,6 @@ colorama
 invoke
 isort
 semantic_version
-twine
+twine >= 1.9.1
 wheel
 gitpython

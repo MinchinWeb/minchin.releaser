@@ -247,8 +247,11 @@ def check_local_install(ctx, version, ext, server="local"):
     else:
         # upload to server
         print("** Uploading to server **")
-        result = invoke.run('twine upload {} -r {}'.format(the_file, server),
-                            warn=True)
+        cmd = 'twine upload {}'.format(the_file)
+        # for PyPI, let twine pick the server
+        if server != "pypi":
+            cmd = cmd + ' -r {}'.format(the_file, server)
+        result = invoke.run(cmd, warn=True)
         if result.failed:
             print(textwrap.fill("[{}ERROR{}] Something broke trying to upload "
                                 "your package.\nThis will be the case if you "
