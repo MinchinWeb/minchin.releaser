@@ -57,80 +57,81 @@ Setting Up Your Project
 
 1. Install ``minchin.releaser``.
 
-    The simplest way is to use ``pip``::
+  The simplest way is to use ``pip``::
 
-        pip install minchin.releaser
+      pip install minchin.releaser
 
-    This will also install all the other packages ``minchin.releaser`` depends
-    on.
+  This will also install all the other packages ``minchin.releaser`` depends
+  on.
 
-    You will also want to add ``minchin.releaser`` to the list of your
-    project's requirements.
+  You will also want to add ``minchin.releaser`` to the list of your
+  project's requirements.
 
 2. Create a ``tasks.py`` file.
 
-    This is where ``invoke`` determine was tasks are available to run. This file
-    should be created in the root folder of your project. If you are not using
-    ``invoke`` for other tasks, this file can be two lines:
+  This is where ``invoke`` determine was tasks are available to run. This file
+  should be created in the root folder of your project. If you are not using
+  ``invoke`` for other tasks, this file can be two lines:
 
-    .. code-block:: python
+  .. code-block:: python
 
-        import invoke
+      import invoke
 
-        from minchin.releaser import make_release
+      from minchin.releaser import make_release
 
-    To confirm that this is working, go to the command line in the root folder
-    of your project, and run::
+  To confirm that this is working, go to the command line in the root folder
+  of your project, and run::
 
-        invoke --list
+      invoke --list
 
-    which will now list ``make_release`` as an available task.
+  which will now list ``make_release`` as an available task.
 
 3. Configure your project.
 
-    Project configuration is actually ``invoke`` configuration, so it is stored
-    in the ``invoke.yaml`` folder in the project root (or anywhere else
-    ``invoke`` can load configuration from) under the ``releaser`` key.
+  Project configuration is actually ``invoke`` configuration, so it is stored
+  in the ``invoke.yaml`` folder in the project root (or anywhere else
+  ``invoke`` can load configuration from) under the ``releaser`` key.
 
-    Available sub-keys:
+  Available sub-keys:
 
-    module_name::
-        (required) the name of your project. It is assumed that your project's
-        version number is importable at ``module_name.__version__`` (see
-        project assumptions).
-    here::
-        (required) the base location to build your package from. To set to the current directory, set to ``.``
-    docs::
-        (required, but can be set to ``None``) the base documentation
-        directory. This is relative to ``here``.
-    test::
-        (required, but can be set to ``None``) the base test directory. This is
-        relative to ``here``.
-    source::
-        (required) the base directory of your Python source code. This is
-        relative to ``here``.
-    changelog::
-        (required, but can be set to ``None``) the location of your changelog
-        file. This is relative to ``here``.
-    version::
-        (required) the location of where your version string is stored. This is
-        relative to ``here``.
-    test_command::
-        (required, but can be set to ``None``) command, run from the command
-        line with the current directory set to ``here``, to run your test suite.
-    version_bump::
-        (optional) default *level* to bump your version. If set to ``none``,
-        this will be requested at runtime. Valid options include ``major``,
-        ``minor``, ``bug``, and ``none``.
-    extra_packages::
-        (optional) Used to install packages before installing your module from
-        the server. Useful particularly for packages that need to be installed
-        from cache (rather than re-downloaded and compiled each time) or for
-        packages that are not available on the test PyPI server. Valid server
-        keys are ``local``, ``test``, and ``pypi``. Under the server key,
-        create a list of the packages you want explicitly installed.
+  module_name::
+      (required) the name of your project. It is assumed that your project's
+      version number is importable at ``module_name.__version__`` (see
+      project assumptions).
+  here::
+      (required) the base location to build your package from. To set to the
+      current directory, set to ``.``
+  docs::
+      (required, but can be set to ``None``) the base documentation
+      directory. This is relative to ``here``.
+  test::
+      (required, but can be set to ``None``) the base test directory. This is
+      relative to ``here``.
+  source::
+      (required) the base directory of your Python source code. This is
+      relative to ``here``.
+  changelog::
+      (required, but can be set to ``None``) the location of your changelog
+      file. This is relative to ``here``.
+  version::
+      (required) the location of where your version string is stored. This is
+      relative to ``here``.
+  test_command::
+      (required, but can be set to ``None``) command, run from the command
+      line with the current directory set to ``here``, to run your test suite.
+  version_bump::
+      (optional) default *level* to bump your version. If set to ``none``,
+      this will be requested at runtime. Valid options include ``major``,
+      ``minor``, ``bug``, and ``none``.
+  extra_packages::
+      (optional) Used to install packages before installing your module from
+      the server. Useful particularly for packages that need to be installed
+      from cache (rather than re-downloaded and compiled each time) or for
+      packages that are not available on the test PyPI server. Valid server
+      keys are ``local``, ``test``, and ``pypi``. Under the server key,
+      create a list of the packages you want explicitly installed.
 
-    (verdorize keys are not listed here.)
+  (verdorize keys are not listed here.)
 
 4. Set up Invoke command shell (Windows).
 
@@ -140,12 +141,12 @@ Setting Up Your Project
 
 7. Upload your package.
 
-    .. code-block:: sh
+  .. code-block:: sh
 
-        invoke make_release
+      invoke make_release
 
-    And then work through the prompts. If this process breaks half-way through,
-    you can re-start.
+  And then work through the prompts. If this process breaks half-way through,
+  you can re-start.
 
 Credits
 -------
