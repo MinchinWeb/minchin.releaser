@@ -97,36 +97,36 @@ in the ``invoke.yaml`` folder in the project root (or anywhere else
 
 Available sub-keys:
 
-module_name::
+module_name
     (required) the name of your project. It is assumed that your project's
     version number is importable at ``module_name.__version__`` (see
     project assumptions).
-here::
+here
     (required) the base location to build your package from. To set to the
     current directory, set to ``.``
-docs::
+docs
     (required, but can be set to ``None``) the base documentation
     directory. This is relative to ``here``.
-test::
+test
     (required, but can be set to ``None``) the base test directory. This is
     relative to ``here``.
-source::
+source
     (required) the base directory of your Python source code. This is
     relative to ``here``.
-changelog::
+changelog
     (required, but can be set to ``None``) the location of your changelog
     file. This is relative to ``here``.
-version::
+version
     (required) the location of where your version string is stored. This is
     relative to ``here``.
-test_command::
+test_command
     (required, but can be set to ``None``) command, run from the command
     line with the current directory set to ``here``, to run your test suite.
-version_bump::
+version_bump
     (optional) default *level* to bump your version. If set to ``none``,
     this will be requested at runtime. Valid options include ``major``,
     ``minor``, ``bug``, and ``none``.
-extra_packages::
+extra_packages
     (optional) Used to install packages before installing your module from
     the server. Useful particularly for packages that need to be installed
     from cache (rather than re-downloaded and compiled each time) or for
