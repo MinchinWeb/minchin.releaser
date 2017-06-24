@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.5.2 <2017-06-23>`
 - :bug:`-` fix flow on creating Git tags with pre-release versions
 - :bug:`-` display error if configuration key doesn't exist
 - :support:`-` better documentation
