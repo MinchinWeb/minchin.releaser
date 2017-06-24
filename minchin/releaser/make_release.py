@@ -340,7 +340,8 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         check_existence(ctx.releaser.test, "test dir", "releaser.test", here, True)
         check_existence(ctx.releaser.docs, "doc dir", "releaser.docs", here, True)
         check_existence(ctx.releaser.version, "version file", "releaser.version", here)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        print(e)
         sys.exit(1)
     print()
 
@@ -499,17 +500,18 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
 
         # warn on pre-release versions
         if new_version.prerelease:
-            print("[{}WARN{}] Currently a pre-release version.")
+            print("[{}WARN{}] Currently a pre-release version."
+                  .format(WARNING_COLOR, RESET_COLOR))
             # True = yes, False = Quit
             ans = text.query_yes_no(' '*7 + 'Create Git tag anyway?',
                                     default="no")
             if ans is False:
                 _create_tag = False
-
-        ans = text.query_yes_no('Create Git tag for version {}?'.format(new_version),
-                                default="no")
-        if ans is False:
-            _create_tag = False
+        else:
+            ans = text.query_yes_no('Create Git tag for version {}?'.format(new_version),
+                                    default="no")
+            if ans is False:
+                _create_tag = False
 
         if _create_tag:
             print("Creating Git tag for version {}".format(new_version))

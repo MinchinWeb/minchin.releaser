@@ -74,7 +74,6 @@ EXTRA_REQUIRES = {
         # 'cloud_sptheme >=1.8',
         # 'releases',
         # 'Babel >=1.3,!=2.0',  # 2.0 breaks on Windows
-
     ],
     'test': [
         # 'green >=1.9.4',  # v2 works

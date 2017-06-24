@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :bug:`-` fix flow on creating Git tags with pre-release versions
+- :bug:`-` display error if configuration key doesn't exist
+- :support:`-` better documentation
 - :release:`0.5.1 <2017-05-27>`
 - :bug:`-` allow twine to pick the PyPI server to upload to
 - :bug:`-` fixes in vendorizing ``minchin.text``, particularly its requirements
