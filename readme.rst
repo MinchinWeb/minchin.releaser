@@ -155,6 +155,9 @@ Step 5. Set up twine configuration.
 Step 6. Register your package on PyPI.
 """"""""""""""""""""""""""""""""""""""
 
+(On the new infrastructure, this no longer needs to be done explicitly. Just
+upload your package.)
+
 Step 7. Upload your package.
 """"""""""""""""""""""""""""
 

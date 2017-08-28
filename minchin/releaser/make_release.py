@@ -46,9 +46,9 @@ def server_url(server_name):
     """Determine the server URL."""
     server_name = server_name.lower()
     if server_name in ["testpypi", "pypitest"]:
-        return r"https://testpypi.python.org/pypi"
+        return r"https://test.pypi.org/pypi"
     elif server_name in ["pypi", ]:
-        return r"https://pypi.python.org/pypi"
+        return r"https://pypi.org/pypi"
 
 
 def update_version_number(ctx, bump=None, ignore_prerelease=False):

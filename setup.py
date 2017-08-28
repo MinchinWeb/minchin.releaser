@@ -62,7 +62,7 @@ LICENSE      = find_meta(*META_PATH, meta_key='license')
 PACKAGES     = setuptools.find_packages(exclude="vendor_src")
 
 # pull from requirements.IN, requirements.TXT is generated from this
-INSTALL_REQUIRES = read_requirements('requirements.in')+ \
+INSTALL_REQUIRES = read_requirements('requirements.in') + \
                    read_requirements('requirements-vendor.in')
 
 EXTRA_REQUIRES = {

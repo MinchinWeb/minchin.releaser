@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :release:`0.5.4 <2017-08-27>`
+- :bug:`-` update to new PyPI url
 - :release:`0.5.3 <2017-06-24>`
 - :bug:`-` properly specify the server for uploading
 - :release:`0.5.2 <2017-06-23>`
