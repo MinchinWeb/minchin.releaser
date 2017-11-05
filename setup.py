@@ -25,26 +25,6 @@ def find_meta(*meta_file_parts, meta_key):
     raise RuntimeError("Unable to find __{}__ string.".format(meta_key))
 
 
-def read_requirements(*parts):
-    """
-    Given a requirements.txt (or similar style file), returns a list of
-    requirements.
-
-    Assumes anything after a single '#' on a line is a comment, and ignores
-    empty lines.
-    """
-    requirements = []
-    for line in read(*parts).splitlines():
-        new_line = re.sub('(\s*)?#.*$',  # the space immediately before the
-                                         # hash mark, the hash mark, and
-                                         # anything that follows it
-                          '',  # replace with a blank string
-                          line)
-        if new_line:  # i.e. we have a non-zero-length string
-            requirements.append(new_line)
-    return requirements
-
-
 ##############################################################################
 #                          PACKAGE METADATA                                  #
 ##############################################################################
@@ -61,9 +41,15 @@ LICENSE      = find_meta(*META_PATH, meta_key='license')
 
 PACKAGES     = setuptools.find_packages(exclude="vendor_src")
 
-# pull from requirements.IN, requirements.TXT is generated from this
-INSTALL_REQUIRES = read_requirements('requirements.in') + \
-                   read_requirements('requirements-vendor.in')
+INSTALL_REQUIRES = [
+    'colorama >= 0.2.5',  # also required by minchin.text
+    'gitpython',
+    'invoke >= 0.20',
+    'isort',
+    'semantic_version',
+    'twine >= 1.9.1',
+    'wheel',
+]
 
 EXTRA_REQUIRES = {
     'build': [
