@@ -139,7 +139,9 @@ extra_packages
 Step 4. Set up Invoke command shell (Windows).
 """"""""""""""""""""""""""""""""""""""""""""""
 
-*Minchin dot Releaser* runs certain commands at the command line. ``Invoke``, regardless of platform, tries to run these on ``/bin/bash`` which doesn't exist in Windows and thus these commands fail.
+*Minchin dot Releaser* runs certain commands at the command line. ``Invoke``,
+regardless of platform, tries to run these on ``/bin/bash`` which doesn't exist
+in Windows and thus these commands fail.
 
 To fix this, create a ``.invoke.yaml`` file in the root of your user directory
 (so the file is ``C:\Users\<your_username>\.invoke.yaml``) and add:
@@ -151,6 +153,38 @@ To fix this, create a ``.invoke.yaml`` file in the root of your user directory
 
 Step 5. Set up twine configuration.
 """""""""""""""""""""""""""""""""""
+
+Create or modify ``$HOME/.pypirc`` to include the ``testpypi` server:
+
+.. code-block:: ini
+
+    [distutils]
+    index-servers=
+        pypi
+        testpypi
+
+    [testpypi]
+    repository: https://test.pypi.org/legacy/
+    username: your testpypi username
+
+.. warning::
+
+    Do not store passwords in the .pypirc file. Storing passwords in plain text
+    is never a good idea.
+
+*Minchin dot Releaser* is automated, and so needs access to your password. This
+can be done using ``keyring``. Keyring can be installed by ``pip`` and then
+passwords are added from the command-line.
+
+.. code-block:: sh
+
+    $ pip install keyring
+    $ keyring set https://test.pypi.org/legacy/ your-username
+    $ keyring set https://upload.pypi.org/legacy/ your-username
+
+See `Twine Keyring Support
+<https://twine.readthedocs.io/en/latest/#keyring-support>`_ for more details.
+
 
 Step 6. Register your package on PyPI.
 """"""""""""""""""""""""""""""""""""""
@@ -168,10 +202,13 @@ Step 7. Upload your package.
 And then work through the prompts. If this process breaks half-way through,
 you can re-start.
 
+
 Credits
 -------
 
-Inspired (in part) by https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+Inspired (in part) by
+https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+
 
 Sample ``invoke.yaml``
 ----------------------
