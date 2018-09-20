@@ -17,6 +17,7 @@ releaser:
       - semantic_version
       - twine
       - wheel
+      - readme_renderer
     pypi:
       - invoke
   vendor_dest: minchin\releaser\_vendor
