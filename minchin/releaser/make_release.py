@@ -43,7 +43,7 @@ VALID_BUMPS_STR = ", & ".join([", ".join(VALID_BUMPS[:-1]), VALID_BUMPS[-1]])
 
 
 def server_url(server_name):
-    """Determine the server URL."""
+    """Determine the server URL to download packages from."""
     server_name = server_name.lower()
     if server_name in ["testpypi", "pypitest"]:
         return r"https://test.pypi.org/pypi"
