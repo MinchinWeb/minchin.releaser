@@ -155,7 +155,7 @@ To fix this, create a ``.invoke.yaml`` file in the root of your user directory
 Step 5. Set up twine configuration.
 """""""""""""""""""""""""""""""""""
 
-Create or modify ``$HOME/.pypirc`` to include the ``testpypi` server:
+Create or modify ``$HOME/.pypirc`` to include the ``testpypi`` server:
 
 .. code-block:: ini
 
