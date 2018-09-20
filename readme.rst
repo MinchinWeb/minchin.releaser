@@ -14,6 +14,7 @@ Once set up, *Minchin dot Releaser*, when run, will:
 - check the configuration
 - confirm all items in the project directory have been added to Git (i.e. that
   the repo is clean)
+- check that your Readme will render on PyPI
 - sort your import statements
 - vendorize required packages
 - run the test suite

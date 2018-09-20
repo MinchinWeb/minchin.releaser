@@ -46,6 +46,7 @@ INSTALL_REQUIRES = [
     'gitpython',
     'invoke >= 0.20',
     'isort',
+    'readme_renderer',
     'semantic_version',
     'twine >= 1.9.1',
     'wheel',

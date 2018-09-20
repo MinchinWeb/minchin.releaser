@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` check readme rendering to avoid broken PyPI readmes.
 - :feature:`-` generate ```requirements.txt`` directly from ``setup.py`` as
   *pip-tools* now supports this.
 - :release:`0.5.5 <2018-09-19>`
