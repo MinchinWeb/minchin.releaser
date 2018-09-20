@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.5.5 <2018-09-19>`
 - :bug:`-` add documentation on how to set up ``twine``.
 - :bug:`-` update to new test PyPI url
 - :release:`0.5.4 <2017-08-27>`
