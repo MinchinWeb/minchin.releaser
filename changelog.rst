@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :bug:`-` readme rendering check is now part of ``twine``. See `twine
+  documentation <https://packaging.python.org/guides/making-a-pypi-friendly-readme/#validating-restructuredtext-markup>`_.
 - :release:`0.6.0 <2018-09-19>`
 - :feature:`-` check readme rendering to avoid broken PyPI readmes.
 - :feature:`-` generate ```requirements.txt`` directly from ``setup.py`` as

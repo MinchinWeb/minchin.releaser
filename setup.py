@@ -46,9 +46,8 @@ INSTALL_REQUIRES = [
     'gitpython',
     'invoke >= 0.20',
     'isort',
-    'readme_renderer',
     'semantic_version',
-    'twine >= 1.9.1',
+    'twine >= 1.11.0',
     'wheel',
 ]
 
@@ -126,6 +125,7 @@ setuptools.setup(
     author_email=AUTHOR_EMAIL,
     description=SHORT_DESC,
     long_description=LONG_DESC,
+    long_description_content_type='text/x-rst',
     packages=PACKAGES,
     package_data={'': ['readme.rst', 'changelog.rst', 'LICENSE.txt']},
     include_package_data=True,

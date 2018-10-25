@@ -373,18 +373,6 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
             print("[{}GOOD{}] Clean Git repo.".format(GOOD_COLOR, RESET_COLOR))
     print()
 
-    text.subtitle("Check Readme Rendering")
-    result = invoke.run('python setup.py check -r -s', warn=True)
-    if not result.ok:
-        print("[{}WARN{}] Readme reported ReST rendering errors."
-                .format(WARNING_COLOR, RESET_COLOR))
-        ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
-                                    default="quit")
-        if ans is False:
-            sys.exit(1)
-    else:
-        print("[{}GOOD{}] Readme renders.".format(GOOD_COLOR, RESET_COLOR))
-
     text.subtitle("Sort Import Statements")
     if not skip_isort:
         for f in Path(ctx.releaser.source).resolve().glob('**/*.py'):
@@ -472,6 +460,19 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
 
     text.subtitle("Build Distributions")
     build_distribution()
+    print()
+
+    text.subtitle("Check Readme Rendering")
+    result = invoke.run('twine check dist/*', warn=True)
+    if not result.ok:
+        print("[{}WARN{}] Readme reported ReST rendering errors."
+                .format(WARNING_COLOR, RESET_COLOR))
+        ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
+                                    default="quit")
+        if ans is False:
+            sys.exit(1)
+    else:
+        print("[{}GOOD{}] Readme renders.".format(GOOD_COLOR, RESET_COLOR))
     print()
 
     server_list = []
