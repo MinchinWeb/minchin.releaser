@@ -31,6 +31,9 @@ Once set up, *Minchin dot Releaser*, when run, will:
 - create a Git tag for your release
 - update your version number to a pre-release version
 
+*Minchin dot Releaser* relies on features added in the more recent versions of
+Python, and thus is Python 3 only.
+
 Assumptions
 -----------
 
