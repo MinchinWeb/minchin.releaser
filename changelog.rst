@@ -1,7 +1,7 @@
 Changelog
 =========
 
-
+- :release:`0.6.1 <2018-10-25>`
 - :bug:`-` add note that this package is Python 3 only
 - :bug:`-` readme rendering check is now part of ``twine``. See `twine
   documentation <https://packaging.python.org/guides/making-a-pypi-friendly-readme/#validating-restructuredtext-markup>`_.
