@@ -8,22 +8,21 @@ from pathlib import Path
 import colorama
 import git  # packaged as 'gitpython'
 import invoke
-import isort
 import semantic_version
 from invoke import task
 from semantic_version import Version
 
+import isort
+
+# try:
+#     from minchin import text
+# except ImportError:
+#     from ._vendor import text
+from ._vendor import text
 from .constants import (ERROR_COLOR, GOOD_COLOR, PIP_EXT, RESET_COLOR,
                         WARNING_COLOR, __version__)
 from .util import check_configuration, check_existence
 from .vendorize import vendorize
-
-try:
-    from minchin import text
-except ImportError:
-    from ._vendor import text
-
-
 
 # also requires `twine`
 
@@ -89,10 +88,11 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
                                                                old_version))
                     else:
                         old_version = Version.coerce(bare_version_str)
-                        if not text.query_yes_quit("{}I think the version is {}."
+                        ans = text.query_yes_quit("{}I think the version is {}."
                                                    " Use it?".format(" "*4,
                                                                      old_version),
-                                                   default="yes"):
+                                                   default="yes")
+                        if ans == text.Answers.QUIT:
                             exit('[{}ERROR{}] Please set an initial version '
                                  'number to continue.'.format(ERROR_COLOR,
                                                               RESET_COLOR))
@@ -154,7 +154,7 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
                                                   .format(WARNING_COLOR,
                                                           RESET_COLOR),
                                                   default="quit")
-                        if ans is False:
+                        if ans == text.Answers.QUIT:
                             sys.exit(1)
 
                     print("{}New version is     {}".format(" "*4,
@@ -367,7 +367,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
             # True = yes, False = Quit
             ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
                                       default="quit")
-            if ans is False:
+            if ans == text.Answers.QUIT:
                 sys.exit(1)
         else:
             print("[{}GOOD{}] Clean Git repo.".format(GOOD_COLOR, RESET_COLOR))
@@ -408,7 +408,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                   .format(WARNING_COLOR, RESET_COLOR))
             ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
                                       default="quit")
-            if ans is False:
+            if ans == text.Answers.QUIT:
                 sys.exit(1)
     else:
         print('[{}WARN{}] No test command given.'.format(WARNING_COLOR,
@@ -446,7 +446,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                   .format(WARNING_COLOR, RESET_COLOR))
             ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
                                       default="quit")
-            if ans is False:
+            if ans == text.Answers.QUIT:
                 sys.exit(1)
     else:
         print('[{}WARN{}] No docmentation generation command given.'
@@ -454,7 +454,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     print()
 
     ans = text.query_yes_quit('All good and ready to go?')
-    if ans is False:
+    if ans == text.Answers.QUIT:
         sys.exit(1)
     print()
 
@@ -469,7 +469,7 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
                 .format(WARNING_COLOR, RESET_COLOR))
         ans = text.query_yes_quit(' '*7 + 'Continue anyway or quit?',
                                     default="quit")
-        if ans is False:
+        if ans == text.Answers.QUIT:
             sys.exit(1)
     else:
         print("[{}GOOD{}] Readme renders.".format(GOOD_COLOR, RESET_COLOR))
@@ -518,12 +518,12 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
             # True = yes, False = Quit
             ans = text.query_yes_no(' '*7 + 'Create Git tag anyway?',
                                     default="no")
-            if ans is False:
+            if ans == text.Answers.NO:
                 _create_tag = False
         else:
             ans = text.query_yes_no('Create Git tag for version {}?'.format(new_version),
                                     default="no")
-            if ans is False:
+            if ans == text.Answers.NO:
                 _create_tag = False
 
         if _create_tag:
@@ -532,5 +532,6 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
         print()
 
     text.subtitle("Bump Version to Pre-release?")
-    if text.query_yes_no("Bump version to pre-release now?"):
+    ans = text.query_yes_no("Bump version to pre-release now?")
+    if ans == text.Answers.YES:
         old_version, new_version = update_version_number(ctx, 'prerelease', True)

@@ -42,7 +42,8 @@ LICENSE      = find_meta(*META_PATH, meta_key='license')
 PACKAGES     = setuptools.find_packages(exclude="vendor_src")
 
 INSTALL_REQUIRES = [
-    'colorama >= 0.2.5',  # also required by minchin.text
+    # also vendorized minchin.text >= 6.0.0
+    'colorama >= 0.2.5',
     'gitpython',
     'invoke >= 0.20',
     'isort',

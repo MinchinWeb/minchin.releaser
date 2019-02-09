@@ -1,6 +1,9 @@
 Changelog
 =========
 
+- :feature:`-` update internal version of ``minchin.text`` (this library is
+  vendorized becaus otherwise it creates a circular dependency).
+- :bug:`- major` rely only on internal version of ``minchin.text``
 - :release:`0.6.1 <2018-10-25>`
 - :bug:`-` add note that this package is Python 3 only
 - :bug:`-` readme rendering check is now part of ``twine``. See `twine
