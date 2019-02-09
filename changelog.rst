@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.7.0 <2019-02-08>`
 - :feature:`-` update internal version of ``minchin.text`` (this library is
   vendorized becaus otherwise it creates a circular dependency).
 - :bug:`- major` rely only on internal version of ``minchin.text``

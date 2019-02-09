@@ -8,11 +8,10 @@ from pathlib import Path
 import colorama
 import git  # packaged as 'gitpython'
 import invoke
+import isort
 import semantic_version
 from invoke import task
 from semantic_version import Version
-
-import isort
 
 # try:
 #     from minchin import text
