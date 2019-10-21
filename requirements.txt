@@ -29,6 +29,6 @@ six==1.11.0               # via bleach, html5lib, readme-renderer
 smmap2==2.0.4             # via gitdb2
 tqdm==4.26.0              # via twine
 twine==1.11.0
-urllib3==1.23             # via requests
+urllib3==1.24.2             # via requests
 webencodings==0.5.1       # via html5lib
 wheel==0.31.1
