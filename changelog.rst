@@ -1,9 +1,13 @@
 Changelog
 =========
 
+- :release:`0.7.1 <2020-04-10>`
+- :bug:`2` update requirements.txt (also #5)
+- :bug:`-` update internal version of ``minchin.text`` to 6.0.1
+- :bug:`-` fix Test PyPI urls
 - :release:`0.7.0 <2019-02-08>`
 - :feature:`-` update internal version of ``minchin.text`` (this library is
-  vendorized becaus otherwise it creates a circular dependency).
+  vendorized because otherwise it creates a circular dependency).
 - :bug:`- major` rely only on internal version of ``minchin.text``
 - :release:`0.6.1 <2018-10-25>`
 - :bug:`-` add note that this package is Python 3 only
