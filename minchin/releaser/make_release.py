@@ -40,11 +40,14 @@ VALID_BUMPS = ['none',
 VALID_BUMPS_STR = ", & ".join([", ".join(VALID_BUMPS[:-1]), VALID_BUMPS[-1]])
 
 
-def server_url(server_name):
+def server_url(server_name, download=False):
     """Determine the server URL to download packages from."""
     server_name = server_name.lower()
     if server_name in ["testpypi", "pypitest"]:
-        return r"https://test.pypi.org/pypi"
+        if download:
+            return r"https://test.pypi.org/simple"
+        else:
+            return r"https://test.pypi.org/legacy/"
     elif server_name in ["pypi", ]:
         return r"https://pypi.org/pypi"
 
@@ -277,7 +280,7 @@ def check_local_install(ctx, version, ext, server="local"):
         result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install -i {3} '
                             '{4}=={5} --no-cache'
                             .format(os.sep, environment, '.exe',
-                                    server_url(server),
+                                    server_url(server, download=True),
                                     ctx.releaser.module_name, version),
                             hide=True)
         if result.failed:
