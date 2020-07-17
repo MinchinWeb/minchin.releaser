@@ -18,6 +18,9 @@ docs/_build/
 downloads/
 eggs/
 env*/
+venv*/
+.env*/
+.venv*/
 htmlcov/
 lib/
 lib64/

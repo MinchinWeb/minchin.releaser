@@ -1,7 +1,9 @@
 Changelog
 =========
 
+- :release:`0.7.2 <2020-07-16>`
 - :bug:`-` support ``isort`` version 5
+- :bug:`-` update internal version of ``minchin.text`` to 6.0.2
 - :release:`0.7.1 <2020-04-10>`
 - :bug:`2` update requirements.txt (also #5)
 - :bug:`-` update internal version of ``minchin.text`` to 6.0.1
