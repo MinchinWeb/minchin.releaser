@@ -46,7 +46,7 @@ INSTALL_REQUIRES = [
     'colorama >= 0.2.5',
     'gitpython',
     'invoke >= 0.20',
-    'isort',
+    'isort >= 5',
     'semantic_version',
     'twine >= 1.11.0',
     'wheel',

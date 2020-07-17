@@ -56,13 +56,17 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
     """
     Update version number.
 
-    Args:
+    Args
+    ----
         bump (str): bump level
         ignore_prerelease (bool): ignore the fact that our new version is a
             prerelease, or issue a warning
 
-    Returns a two semantic_version objects (the old version and the current
-    version).
+    Returns
+    -------
+        a two semantic_version objects (the old version and the current
+        version).
+
     """
     if bump is not None and bump.lower() not in VALID_BUMPS:
         print(textwrap.fill("[{}WARN{}] bump level, as provided on command "
@@ -225,13 +229,15 @@ def other_dependencies(ctx, server, environment):
 
 def check_local_install(ctx, version, ext, server="local"):
     """
-    Upload and install works?
+    Upload and check if install works.
 
     Uploads a distribution to PyPI, and then tests to see if I can download and
     install it.
 
-    Returns:
+    Returns
+    -------
         str: string summazing operation
+
     """
     here = Path(ctx.releaser.here).resolve()
     dist_dir = here / 'dist'
@@ -378,11 +384,11 @@ def make_release(ctx, bump=None, skip_local=False, skip_test=False,
     text.subtitle("Sort Import Statements")
     if not skip_isort:
         for f in Path(ctx.releaser.source).resolve().glob('**/*.py'):
-            isort.SortImports(f)
+            isort.file(f)
             print('.', end="")
         if ctx.releaser.test is not None:
             for f in Path(ctx.releaser.test).resolve().glob('**/*.py'):
-                isort.SortImports(f)
+                isort.file(f)
                 print('.', end="")
         print(' Done!')
     else:
