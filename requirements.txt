@@ -17,7 +17,7 @@ isort==5.1.1              # via minchin.releaser (setup.py)
 keyring==21.2.1           # via twine
 packaging==20.4           # via bleach
 pkginfo==1.5.0.1          # via twine
-pygments==2.6.1           # via readme-renderer
+pygments==2.7.4           # via readme-renderer
 pyparsing==2.4.7          # via packaging
 pywin32-ctypes==0.2.0     # via keyring
 readme-renderer==26.0     # via twine
