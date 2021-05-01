@@ -50,6 +50,10 @@ INSTALL_REQUIRES = [
     'semantic_version',
     'twine >= 1.11.0',
     'wheel',
+
+    # sub-dependencies, minimums for security reasons
+    "bleach >= 3.3.0",
+    "pygments >= 2.7.4",
 ]
 
 EXTRA_REQUIRES = {

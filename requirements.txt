@@ -4,8 +4,10 @@
 #
 #    pip-compile
 #
-bleach==3.1.5
-    # via readme-renderer
+bleach==3.3.0
+    # via
+    #   minchin.releaser (setup.py)
+    #   readme-renderer
 certifi==2020.6.20
     # via requests
 chardet==3.0.4
@@ -32,8 +34,10 @@ packaging==20.4
     # via bleach
 pkginfo==1.5.0.1
     # via twine
-pygments==2.6.1
-    # via readme-renderer
+pygments==2.8.1
+    # via
+    #   minchin.releaser (setup.py)
+    #   readme-renderer
 pyparsing==2.4.7
     # via packaging
 pywin32-ctypes==0.2.0
