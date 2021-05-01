@@ -103,6 +103,8 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3 :: Only',
 
     'Natural Language :: English',
@@ -126,6 +128,10 @@ setuptools.setup(
     name=NAME,
     version=VERSION,
     url=URL,
+    project_urls={
+        "Bug Tracker": "https://github.com/MinchinWeb/minchin.releaser/issues",
+        "Changelog": "https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst",
+    },
     license=LICENSE,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,

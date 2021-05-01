@@ -1,6 +1,9 @@
 Minchin.Releaser
 ================
 
+[![PyPI Version](https://img.shields.io/pypi/v/minchin.releaser)](https://pypi.org/project/minchin.releaser/)
+[![Changlog](https://img.shields.io/badge/-Changelog-success)](https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst)
+
 Tools to make releasing Python packages easier.
 
 *Minchin dot Releaser* in currently set up as an
