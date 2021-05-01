@@ -44,7 +44,7 @@ PACKAGES     = setuptools.find_packages(exclude="vendor_src")
 INSTALL_REQUIRES = [
     # also vendorized minchin.text >= 6.0.0
     'colorama >= 0.2.5',
-    'gitpython',
+    'gitpython >= 3.0.6',
     'invoke >= 0.20',
     'isort >= 5',
     'semantic_version',

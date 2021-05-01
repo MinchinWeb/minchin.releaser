@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.7.3 <2021-04-30>`
 - :bug:`8` update minimum requirements.txt (also #9)
 - :bug:`-` update internal version of ``minchin.text`` to 6.1.0
 - :release:`0.7.2 <2020-07-16>`
