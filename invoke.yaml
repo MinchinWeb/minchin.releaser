@@ -5,7 +5,7 @@ releaser:
   test: None
   source: minchin
   changelog: changelog.rst
-  version: minchin\releaser\constants.py
+  version: minchin/releaser/constants.py
   test_command: "green -kq"
   version_bump: none
   extra_packages:
@@ -20,10 +20,10 @@ releaser:
       - gitpython
     pypi:
       - idna==2.10
-  vendor_dest: minchin\releaser\_vendor
+  vendor_dest: minchin/releaser/_vendor
   vendor_packages:
     "minchin.text":
-      src: ..\minchin.text\minchin
+      src: ../minchin.text/minchin
       dest: .
-      requirements: ..\minchin.text\requirements.in
+      requirements: ../minchin.text/requirements.in
   vendor_override_src: vendor_src
