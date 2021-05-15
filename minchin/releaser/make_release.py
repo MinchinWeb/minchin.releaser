@@ -19,7 +19,7 @@ from semantic_version import Version
 #     from ._vendor import text
 from ._vendor import text
 from .constants import (ERROR_COLOR, GOOD_COLOR, PIP_EXT, RESET_COLOR,
-                        WARNING_COLOR, __version__)
+                        VENV_BIN, WARNING_COLOR, __version__)
 from .util import check_configuration, check_existence
 from .vendorize import vendorize
 
@@ -214,8 +214,8 @@ def other_dependencies(ctx, server, environment):
             print('** Other Dependencies, based on server', server, '**')
 
         for pkg in extra_pkgs:
-            result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3}'
-                                .format(os.sep, environment, PIP_EXT, pkg),
+            result = invoke.run('env{0}{1}{0}{2}{0}pip{3} install {4}'
+                                .format(os.sep, environment, VENV_BIN, PIP_EXT, pkg),
                                 hide=True)
             if result.ok:
                 print('{}[{}GOOD{}] Installed {}'.format("", GOOD_COLOR,

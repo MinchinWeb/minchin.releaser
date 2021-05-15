@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :bug:`-` find pip's virtual environment path on non-Windows systems
 - :release:`0.7.4 <2021-04-30>`
 - :bug:`-` fix readme rendering
 - :release:`0.7.3 <2021-04-30>`
