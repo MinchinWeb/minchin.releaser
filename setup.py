@@ -39,7 +39,7 @@ AUTHOR_EMAIL = find_meta(*META_PATH, meta_key='email')
 URL          = find_meta(*META_PATH, meta_key='url')
 LICENSE      = find_meta(*META_PATH, meta_key='license')
 
-PACKAGES     = setuptools.find_packages(exclude="vendor_src")
+PACKAGES     = setuptools.find_packages(exclude=("vendor_src",))
 
 INSTALL_REQUIRES = [
     # also vendorized minchin.text >= 6.0.0
