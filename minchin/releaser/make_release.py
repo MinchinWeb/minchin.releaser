@@ -213,7 +213,7 @@ def other_dependencies(ctx, server, environment):
         if extra_pkgs:
             print('** Other Dependencies, based on server', server, '**')
 
-        for pkg in extra_pkgs:
+        for pkg in extra_pkgs:VENV_
             result = invoke.run('env{0}{1}{0}{2}{0}pip{3} install {4}'
                                 .format(os.sep, environment, VENV_BIN, PIP_EXT, pkg),
                                 hide=True)
@@ -278,14 +278,14 @@ def check_local_install(ctx, version, ext, server="local"):
     invoke.run('python -m venv env{}{}'.format(os.sep, environment))
     other_dependencies(ctx, server, environment)
     if server == "local":
-        result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install {3} --no-cache'
-                            .format(os.sep, environment, '.exe', the_file),
+        result = invoke.run('env{0}{1}{0}{2}{0}pip{3} install {4} --no-cache'
+                            .format(os.sep, environment, VENV_BIN, PIP_EXT, the_file),
                             hide=True)
     else:
         #print("  **Install from server**")
-        result = invoke.run('env{0}{1}{0}Scripts{0}pip{2} install -i {3} '
+        result = invoke.run('env{0}{1}{0}{2}{0}pip{3} install -i {4} '
                             '{4}=={5} --no-cache'
-                            .format(os.sep, environment, '.exe',
+                            .format(os.sep, environment, VENV_BIN, PIP_EXT,
                                     server_url(server, download=True),
                                     ctx.releaser.module_name, version),
                             hide=True)
@@ -296,9 +296,9 @@ def check_local_install(ctx, version, ext, server="local"):
             sys.exit(1)
     print("** Test version of installed package **")
 
-    result = invoke.run('env{0}{1}{0}Scripts{0}python{2} -c '
-                        'exec("""import {3}\\nprint({3}.__version__)""")'
-                        .format(os.sep, environment, '.exe',
+    result = invoke.run('env{0}{1}{0}{2}{0}python{3} -c '
+                        'exec("""import {4}\\nprint({4}.__version__)""")'
+                        .format(os.sep, environment, VENV_BIN, PIP_EXT,
                                 (ctx.releaser.module_name).strip()))
     test_version = result.stdout.strip()
     # print(test_version, type(test_version), type(expected_version))
