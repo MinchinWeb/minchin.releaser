@@ -3,7 +3,7 @@ import os
 import colorama
 
 __title__ = "minchin.releaser"
-__version__ = "0.7.5+dev.0"
+__version__ = "0.7.5+dev.1"
 __description__ = "Minchin.Releaser is a collection of tools designed to make releasing Python packages easier."
 __author__ = "William Minchin"
 __email__ = "w_minchin@hotmail.com"
@@ -19,6 +19,6 @@ RESET_COLOR = colorama.Style.RESET_ALL
 # on Windows, this should be '.exe', but we get away with setting it to
 # blank as Windows will (typically) run .exe files without specifying the
 # file extension
-PIP_EXT = ''
+PIP_EXT = ""
 # name of scripts folder
-VENV_BIN = "Scripts" if os.name == 'nt' else "bin"
+VENV_BIN = "Scripts" if os.name == "nt" else "bin"

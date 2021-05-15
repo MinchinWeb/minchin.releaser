@@ -17,7 +17,6 @@ except ImportError:
     from ._vendor import text
 
 
-
 def copytree(src, dst, overwrite=False, ignore_list=None, debug=False):
     """
     Copy a tree of files over.
@@ -27,7 +26,7 @@ def copytree(src, dst, overwrite=False, ignore_list=None, debug=False):
     if ignore_list is None:
         ignore_list = []
     if debug:
-        print('copytree {} to {}'.format(src, dst))
+        print("copytree {} to {}".format(src, dst))
     for child in Path(src).iterdir():
         if debug:
             print("  on file {}".format(child))
@@ -54,7 +53,7 @@ def copytree(src, dst, overwrite=False, ignore_list=None, debug=False):
 
 def read(*parts):
     # intentionally *not* adding an encoding option to open
-    return codecs.open(os.path.join(*parts), 'r').read()
+    return codecs.open(os.path.join(*parts), "r").read()
 
 
 def read_requirements(*parts):
@@ -66,11 +65,13 @@ def read_requirements(*parts):
     """
     requirements = []
     for line in read(*parts).splitlines():
-        new_line = re.sub(r'(\s*)?#.*$',  # the space immediately before the
-                                          # hash mark, the hash mark, and
-                                          # anything that follows it
-                          '',  # replace with a blank string
-                          line)
+        new_line = re.sub(
+            r"(\s*)?#.*$",  # the space immediately before the
+            # hash mark, the hash mark, and
+            # anything that follows it
+            "",  # replace with a blank string
+            line,
+        )
         if new_line:  # i.e. we have a non-zero-length string
             requirements.append(new_line)
     return requirements
@@ -86,15 +87,16 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
         print()
 
     text.subtitle("Configuration")
-    extra_keys = ['here',
-                  'source',
-                  'module_name',
-                  'vendor_dest',
-                  'vendor_packages',
-                  'vendor_override_src',
-                 ]
+    extra_keys = [
+        "here",
+        "source",
+        "module_name",
+        "vendor_dest",
+        "vendor_packages",
+        "vendor_override_src",
+    ]
     if not internal_call:
-        check_configuration(ctx, 'releaser', extra_keys)
+        check_configuration(ctx, "releaser", extra_keys)
         check_existence(ctx.releaser.here, "base dir", "releaser.here")
     here = Path(ctx.releaser.here).resolve()
 
@@ -104,12 +106,21 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
         except FileNotFoundError:
             sys.exit(1)
 
-    check_existence(ctx.releaser.vendor_dest, "vendor dir", "releaser.vendor_dest",
-                    here, allow_not_existing=True)
-    check_existence(ctx.releaser.vendor_override_src, "override dir",
-                    "releaser.vendor_override_src", here, True)
+    check_existence(
+        ctx.releaser.vendor_dest,
+        "vendor dir",
+        "releaser.vendor_dest",
+        here,
+        allow_not_existing=True,
+    )
+    check_existence(
+        ctx.releaser.vendor_override_src,
+        "override dir",
+        "releaser.vendor_override_src",
+        here,
+        True,
+    )
     print()
-
 
     dest_dir = Path(ctx.releaser.vendor_dest).resolve()
     base_pkg_dir = Path(ctx.releaser.source)
@@ -123,11 +134,12 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
     dest_dir.mkdir(exist_ok=True)
     print()
 
-    my_req = ['# Requirements for {}'.format(ctx.releaser.module_name),
-              '#',
-              '# This is built by the minchin.releaser.vendorize script. Do not edit it directly.',
-              '',
-             ]
+    my_req = [
+        "# Requirements for {}".format(ctx.releaser.module_name),
+        "#",
+        "# This is built by the minchin.releaser.vendorize script. Do not edit it directly.",
+        "",
+    ]
     my_req_add = []
 
     PACKAGES = tuple(ctx.releaser.vendor_packages.keys())
@@ -140,16 +152,17 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
         pkg_dest_dir = (dest_dir / ctx.releaser.vendor_packages[package].dest).resolve()
         pkg_dest_dir.mkdir(exist_ok=True)
         print("Copying code from {}".format(root_dir))
-        copytree(str(root_dir), str(pkg_dest_dir), True, ['__pycache__'])
-
+        copytree(str(root_dir), str(pkg_dest_dir), True, ["__pycache__"])
 
         # build requirements file
         try:
-            pkg_req_override = (here / ctx.releaser.vendor_packages[package].requirements).resolve()
+            pkg_req_override = (
+                here / ctx.releaser.vendor_packages[package].requirements
+            ).resolve()
         except AttributeError:
             pkg_req_override = None
-        pkg_req = root_dir / 'requirements.in'
-        pkg_req_alt = root_dir / 'requirements.txt'
+        pkg_req = root_dir / "requirements.in"
+        pkg_req_alt = root_dir / "requirements.txt"
         if pkg_req_override and pkg_req_override.exists():
             print("  Using project override requirements.")
             req_to_add = read_requirements(str(pkg_req_override))
@@ -170,15 +183,14 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
     my_req.extend(my_req_add)
 
     # write out requirements file
-    dst_req = here / 'requirements-vendor.in'
-    dst_req.write_text('\n'.join(my_req) + '\n')
+    dst_req = here / "requirements-vendor.in"
+    dst_req.write_text("\n".join(my_req) + "\n")
     print()
 
     # copy over project specific override files
     text.subtitle("Copying over project-specific vendorized overrides.")
     root_dir = Path(ctx.releaser.vendor_override_src)
-    copytree(str(root_dir), str(dest_dir), overwrite=True,
-             ignore_list=['__pycache__'])
+    copytree(str(root_dir), str(dest_dir), overwrite=True, ignore_list=["__pycache__"])
     print()
 
     if not internal_call:

@@ -17,28 +17,42 @@ def check_configuration(ctx, base_key, needed_keys):
 
     # check for valid configuration
     if base_key not in ctx.keys():
-        exit("[{}ERROR{}] missing configuration for '{}'"
-             .format(ERROR_COLOR, RESET_COLOR, base_key))
+        exit(
+            "[{}ERROR{}] missing configuration for '{}'".format(
+                ERROR_COLOR, RESET_COLOR, base_key
+            )
+        )
         # TODO: offer to create configuration file
     if ctx.releaser is None:
-        exit("[{}ERROR{}] empty configuration for '{}' found"
-             .format(ERROR_COLOR, RESET_COLOR, base_key))
+        exit(
+            "[{}ERROR{}] empty configuration for '{}' found".format(
+                ERROR_COLOR, RESET_COLOR, base_key
+            )
+        )
         # TODO: offer to create configuration file
 
     # TODO: allow use of default values
     for my_key in needed_keys:
         if my_key not in ctx[base_key].keys():
-            exit("[{}ERROR{}] missing configuration key '{}.{}'"
-                 .format(ERROR_COLOR, RESET_COLOR, base_key, my_key))
+            exit(
+                "[{}ERROR{}] missing configuration key '{}.{}'".format(
+                    ERROR_COLOR, RESET_COLOR, base_key, my_key
+                )
+            )
 
 
-def check_existence(to_check, name, config_key=None, relative_to=None,
-                    allow_undefined=False, allow_not_existing=False,
-                    base_key='releaser'):
+def check_existence(
+    to_check,
+    name,
+    config_key=None,
+    relative_to=None,
+    allow_undefined=False,
+    allow_not_existing=False,
+    base_key="releaser",
+):
     """Determine whether a file or folder actually exists."""
-    if allow_undefined and (to_check is None or to_check.lower() == 'none'):
-        print("{: <14} -> {}UNDEFINED{}".format(name, WARNING_COLOR,
-                                                RESET_COLOR))
+    if allow_undefined and (to_check is None or to_check.lower() == "none"):
+        print("{: <14} -> {}UNDEFINED{}".format(name, WARNING_COLOR, RESET_COLOR))
         return
     else:
         if config_key is None:
@@ -46,16 +60,16 @@ def check_existence(to_check, name, config_key=None, relative_to=None,
         my_check = Path(to_check).resolve()
         if my_check.exists() and relative_to is not None:
             printed_path = str(my_check.relative_to(relative_to))
-            if printed_path != '.':
-                printed_path = '.' + os.sep + printed_path
+            if printed_path != ".":
+                printed_path = "." + os.sep + printed_path
         else:
             printed_path = str(my_check)
         if my_check.exists() or allow_not_existing:
             print("{: <14} -> {}".format(name, printed_path))
             return
         else:
-            raise FileNotFoundError("[{}ERROR{}] '{}', as given, doesn't "
-                                    "exist. For configuration key '{}', was "
-                                    "given: {}".format(ERROR_COLOR, RESET_COLOR,
-                                                       name, config_key,
-                                                       to_check))
+            raise FileNotFoundError(
+                "[{}ERROR{}] '{}', as given, doesn't "
+                "exist. For configuration key '{}', was "
+                "given: {}".format(ERROR_COLOR, RESET_COLOR, name, config_key, to_check)
+            )
