@@ -348,7 +348,7 @@ def check_local_install(ctx, version, ext, server="local"):
         # print("  **Install from server**")
         result = invoke.run(
             "env{0}{1}{0}{2}{0}pip{3} install -i {4} "
-            "{4}=={5} --no-cache".format(
+            "{5}=={6} --no-cache".format(
                 os.sep,
                 environment,
                 VENV_BIN,
@@ -371,7 +371,7 @@ def check_local_install(ctx, version, ext, server="local"):
 
     result = invoke.run(
         "env{0}{1}{0}{2}{0}python{3} -c "
-        'exec("""import {4}\\nprint({4}.__version__)""")'.format(
+        "'exec(\"\"\"import {4}\\nprint({4}.__version__)\"\"\")'".format(
             os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
         )
     )

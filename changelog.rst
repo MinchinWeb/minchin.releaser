@@ -3,7 +3,7 @@ Changelog
 
 - :support:`-` better bootstraping when starting fresh
 - :bug:`-` don't include `vendor_src` folder in final distributions
-- :bug:`-` find pip's virtual environment path on non-Windows systems
+- :bug:`-` better cross-platform suport
 - :release:`0.7.4 <2021-04-30>`
 - :bug:`-` fix readme rendering
 - :release:`0.7.3 <2021-04-30>`
