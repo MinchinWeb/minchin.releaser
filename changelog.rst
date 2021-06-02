@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.7.5 <2021-06-02>`
 - :bug:`-` don't copy ``.git`` folder when vendorizing a package
 - :support:`-` better bootstraping when starting fresh
 - :bug:`-` don't include `vendor_src` folder in final distributions

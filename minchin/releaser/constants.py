@@ -3,7 +3,7 @@ import os
 import colorama
 
 __title__ = "minchin.releaser"
-__version__ = "0.7.5+dev.1"
+__version__ = "0.7.5"
 __description__ = "Minchin.Releaser is a collection of tools designed to make releasing Python packages easier."
 __author__ = "William Minchin"
 __email__ = "w_minchin@hotmail.com"

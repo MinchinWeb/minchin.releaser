@@ -266,7 +266,7 @@ def other_dependencies(ctx, server, environment):
 
         for pkg in extra_pkgs:
             result = invoke.run(
-                "env{0}{1}{0}{2}{0}pip{3} install {4}".format(
+                ".{0}env{0}{1}{0}{2}{0}pip{3} install {4}".format(
                     os.sep, environment, VENV_BIN, PIP_EXT, pkg
                 ),
                 hide=True,
@@ -339,7 +339,7 @@ def check_local_install(ctx, version, ext, server="local"):
     other_dependencies(ctx, server, environment)
     if server == "local":
         result = invoke.run(
-            "env{0}{1}{0}{2}{0}pip{3} install {4} --no-cache".format(
+            ".{0}env{0}{1}{0}{2}{0}pip{3} install {4} --no-cache".format(
                 os.sep, environment, VENV_BIN, PIP_EXT, the_file
             ),
             hide=True,
@@ -347,7 +347,7 @@ def check_local_install(ctx, version, ext, server="local"):
     else:
         # print("  **Install from server**")
         result = invoke.run(
-            "env{0}{1}{0}{2}{0}pip{3} install -i {4} "
+            ".{0}env{0}{1}{0}{2}{0}pip{3} install -i {4} "
             "{5}=={6} --no-cache".format(
                 os.sep,
                 environment,
@@ -370,8 +370,8 @@ def check_local_install(ctx, version, ext, server="local"):
     print("** Test version of installed package **")
 
     result = invoke.run(
-        "env{0}{1}{0}{2}{0}python{3} -c "
-        "'exec(\"\"\"import {4}\\nprint({4}.__version__)\"\"\")'".format(
+        ".{0}env{0}{1}{0}{2}{0}python{3} -c "
+        "'exec(\\\"\\\"\\\"import {4}\\nprint({4}.__version__)\\\"\\\"\\\")'".format(
             os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
         )
     )
