@@ -8,7 +8,7 @@ bleach==3.3.0
     # via
     #   minchin.releaser (setup.py)
     #   readme-renderer
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 chardet==4.0.0
     # via requests
@@ -20,11 +20,11 @@ docutils==0.17.1
     # via readme-renderer
 gitdb==4.0.7
     # via gitpython
-gitpython==3.1.15
+gitpython==3.1.17
     # via minchin.releaser (setup.py)
 idna==2.10
     # via requests
-importlib-metadata==4.0.1
+importlib-metadata==4.4.0
     # via
     #   keyring
     #   twine
@@ -38,7 +38,7 @@ packaging==20.9
     # via bleach
 pkginfo==1.7.0
     # via twine
-pygments==2.8.1
+pygments==2.9.0
     # via
     #   minchin.releaser (setup.py)
     #   readme-renderer
@@ -54,24 +54,24 @@ requests==2.25.1
     # via
     #   requests-toolbelt
     #   twine
-rfc3986==1.4.0
+rfc3986==1.5.0
     # via twine
 semantic-version==2.8.5
     # via minchin.releaser (setup.py)
-six==1.15.0
+six==1.16.0
     # via
     #   bleach
     #   readme-renderer
 smmap==4.0.0
     # via gitdb
-tqdm==4.60.0
+tqdm==4.61.0
     # via twine
 twine==3.4.1
     # via minchin.releaser (setup.py)
-typing-extensions==3.7.4.3
-    # via gitpython
-urllib3==1.26.4
-    # via requests
+urllib3==1.26.5
+    # via
+    #   minchin.releaser (setup.py)
+    #   requests
 webencodings==0.5.1
     # via bleach
 wheel==0.36.2

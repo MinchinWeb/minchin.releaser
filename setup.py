@@ -54,6 +54,7 @@ INSTALL_REQUIRES = [
     # sub-dependencies, minimums for security reasons
     "bleach >= 3.3.0",
     "pygments >= 2.7.4",
+    "urllib3 >= 1.26.5",
 ]
 
 EXTRA_REQUIRES = {
