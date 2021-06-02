@@ -152,7 +152,7 @@ def vendorize(ctx, PACKAGES=None, dest_dir=None, internal_call=False):
         pkg_dest_dir = (dest_dir / ctx.releaser.vendor_packages[package].dest).resolve()
         pkg_dest_dir.mkdir(exist_ok=True)
         print("Copying code from {}".format(root_dir))
-        copytree(str(root_dir), str(pkg_dest_dir), True, ["__pycache__"])
+        copytree(str(root_dir), str(pkg_dest_dir), True, ["__pycache__", ".git"])
 
         # build requirements file
         try:

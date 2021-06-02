@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :bug:`-` don't copy ``.git`` folder when vendorizing a package
 - :support:`-` better bootstraping when starting fresh
 - :bug:`-` don't include `vendor_src` folder in final distributions
 - :bug:`-` better cross-platform suport
