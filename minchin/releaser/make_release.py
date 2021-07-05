@@ -381,12 +381,22 @@ def check_local_install(ctx, version, ext, server="local"):
             sys.exit(1)
     print("** Test version of installed package **")
 
-    result = invoke.run(
-        ".{0}env{0}{1}{0}{2}{0}python{3} -c "
-        "'exec(\\\"\\\"\\\"import {4}\\nprint({4}.__version__)\\\"\\\"\\\")'".format(
-            os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
+    # this is (supposed) to be the same command, but command line escaping is
+    # different...
+    if os.name == "nt":
+        result = invoke.run(
+            "env{0}{1}{0}{2}{0}python{3} -c "
+            'exec("""import {4}\\nprint({4}.__version__)""")'.format(
+                os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
+            )
         )
-    )
+    else:
+        result = invoke.run(
+            ".{0}env{0}{1}{0}{2}{0}python{3} -c "
+            "'exec(\\\"\\\"\\\"import {4}\\nprint({4}.__version__)\\\"\\\"\\\")'".format(
+                os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
+            )
+        )
     test_version = result.stdout.strip()
     # print(test_version, type(test_version), type(expected_version))
     if Version(test_version) == version:

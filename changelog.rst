@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :release:`0.8.0 <2021-07-05>`
+- :bug:`- major` better cross-platform suport
 - :feature:`-` support differing ``module_name`` and ``pypi_name``.
 - :release:`0.7.5 <2021-06-02>`
 - :bug:`-` don't copy ``.git`` folder when vendorizing a package
