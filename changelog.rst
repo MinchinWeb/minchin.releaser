@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :feature:`-` support differing ``module_name`` and ``pypi_name``.
 - :release:`0.7.5 <2021-06-02>`
 - :bug:`-` don't copy ``.git`` folder when vendorizing a package
 - :support:`-` better bootstraping when starting fresh

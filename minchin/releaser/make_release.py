@@ -75,6 +75,18 @@ def server_url(server_name, download=False):
         return r"https://pypi.org/pypi"
 
 
+def pypi_name(ctx):
+    """
+    Determine name of package to install from (test)PyPI server.
+
+    Defaults to "module_name", but can be overwritten by "pypi_name".
+    """
+    try:
+        return ctx.releaser.pypi_name
+    except AttributeError:
+        return ctx.releaser.module_name
+
+
 def update_version_number(ctx, bump=None, ignore_prerelease=False):
     """
     Update version number.
@@ -354,7 +366,7 @@ def check_local_install(ctx, version, ext, server="local"):
                 VENV_BIN,
                 PIP_EXT,
                 server_url(server, download=True),
-                ctx.releaser.module_name,
+                pypi_name(ctx),
                 version,
             ),
             hide=True,

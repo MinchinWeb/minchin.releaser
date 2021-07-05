@@ -89,14 +89,18 @@ should be created in the root folder of your project. If you are not using
 
 .. code-block:: python
 
+    # tasks.py
+
     import invoke
 
     from minchin.releaser import make_release
 
 To confirm that this is working, go to the command line in the root folder
-of your project, and run::
+of your project, and run:
 
-    invoke --list
+.. code-block:: sh
+
+    $ invoke --list
 
 which will now list ``make_release`` as an available task.
 
@@ -113,6 +117,9 @@ module_name
     (required) the name of your project. It is assumed that your project's
     version number is importable at ``module_name.__version__`` (see
     project assumptions).
+pypi_name
+    (optional) the name of your project as uploaded to PyPI. This only needs to
+    be set if it differs from ``module_name``.
 here
     (required) the base location to build your package from. To set to the
     current directory, set to ``.``
@@ -146,7 +153,7 @@ extra_packages
     keys are ``local``, ``test``, and ``pypi``. Under the server key,
     create a list of the packages you want explicitly installed.
 
-(verdorize keys are not listed here.)
+(vendorize keys are not listed here.)
 
 Step 4. Set up Invoke command shell (Windows).
 """"""""""""""""""""""""""""""""""""""""""""""
@@ -209,7 +216,7 @@ Step 7. Upload your package.
 
 .. code-block:: sh
 
-    invoke make_release
+    $ invoke make_release
 
 And then work through the prompts. If this process breaks half-way through,
 you can re-start.
