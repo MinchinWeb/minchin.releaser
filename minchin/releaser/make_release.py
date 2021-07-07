@@ -349,18 +349,29 @@ def check_local_install(ctx, version, ext, server="local"):
         shutil.rmtree("env" + os.sep + environment)
     invoke.run("python -m venv env{}{}".format(os.sep, environment))
     other_dependencies(ctx, server, environment)
+
+    pip_args = " --no-cache"
+    # build isolation fails on the Test PyPI server, because the server does
+    # not host a version of "setuptools"
+    if server in ["testpypi", "pypitest"]:
+        pip_args += " --no-build-isolation"
+
     if server == "local":
         result = invoke.run(
-            ".{0}env{0}{1}{0}{2}{0}pip{3} install {4} --no-cache".format(
-                os.sep, environment, VENV_BIN, PIP_EXT, the_file
+            ".{0}env{0}{1}{0}{2}{0}pip{3} install {4}{5}".format(
+                os.sep,
+                environment,
+                VENV_BIN,
+                PIP_EXT,
+                the_file,
+                pip_args,
             ),
             hide=True,
         )
     else:
         # print("  **Install from server**")
         result = invoke.run(
-            ".{0}env{0}{1}{0}{2}{0}pip{3} install -i {4} "
-            "{5}=={6} --no-cache".format(
+            ".{0}env{0}{1}{0}{2}{0}pip{3} install -i {4} {5}=={6}{7}".format(
                 os.sep,
                 environment,
                 VENV_BIN,
@@ -368,6 +379,7 @@ def check_local_install(ctx, version, ext, server="local"):
                 server_url(server, download=True),
                 pypi_name(ctx),
                 version,
+                pip_args,
             ),
             hide=True,
         )
@@ -387,14 +399,22 @@ def check_local_install(ctx, version, ext, server="local"):
         result = invoke.run(
             "env{0}{1}{0}{2}{0}python{3} -c "
             'exec("""import {4}\\nprint({4}.__version__)""")'.format(
-                os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
+                os.sep,
+                environment,
+                VENV_BIN,
+                PIP_EXT,
+                (ctx.releaser.module_name).strip(),
             )
         )
     else:
         result = invoke.run(
             ".{0}env{0}{1}{0}{2}{0}python{3} -c "
             "'exec(\\\"\\\"\\\"import {4}\\nprint({4}.__version__)\\\"\\\"\\\")'".format(
-                os.sep, environment, VENV_BIN, PIP_EXT, (ctx.releaser.module_name).strip()
+                os.sep,
+                environment,
+                VENV_BIN,
+                PIP_EXT,
+                (ctx.releaser.module_name).strip(),
             )
         )
     test_version = result.stdout.strip()
