@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.8.1 <2021-07-07>`
 - :bug:`-` allow PEP518 builds on the test PyPI server.
 - :release:`0.8.0 <2021-07-05>`
 - :bug:`- major` better cross-platform suport
