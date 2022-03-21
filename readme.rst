@@ -1,15 +1,27 @@
 Minchin.Releaser
 ================
 
-|PyPI Version badge| |Changelog badge|
-
-.. |PyPI Version badge| image:: https://img.shields.io/pypi/v/minchin.releaser
-   :target: https://pypi.org/project/minchin.releaser/
-
-.. |Changelog badge| image:: https://img.shields.io/badge/-Changelog-success
-   :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst
-
 Tools to make releasing Python packages easier.
+
+.. image:: https://img.shields.io/pypi/v/minchin.releaser.svg?style=flat
+    :target: https://pypi.python.org/pypi/minchin.releaser/
+    :alt: PyPI version number
+
+.. image:: https://img.shields.io/badge/-Changelog-success
+   :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst
+   :alt: Changelog
+
+.. image:: https://img.shields.io/pypi/pyversions/minchin.releaser?style=flat
+    :target: https://pypi.python.org/pypi/minchin.releaser/
+    :alt: Supported Python version
+
+.. image:: https://img.shields.io/pypi/l/minchin.releaser.svg?style=flat&color=green
+    :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/LICENSE
+    :alt: License
+
+.. image:: https://img.shields.io/pypi/dm/minchin.releaser.svg?style=flat
+    :target: https://pypi.python.org/pypi/minchin.releaser/
+    :alt: Download Count
 
 *Minchin dot Releaser* in currently set up as an
 `invoke <http://www.pyinvoke.org/>`_ task. It is designed to provide a single
