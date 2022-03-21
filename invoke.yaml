@@ -19,7 +19,7 @@ releaser:
       - readme_renderer
       - gitpython
     pypi:
-      - idna==2.10
+      - idna==3.3
   vendor_dest: minchin/releaser/_vendor
   vendor_packages:
     "minchin.text":

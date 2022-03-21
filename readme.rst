@@ -16,7 +16,7 @@ Tools to make releasing Python packages easier.
     :alt: Supported Python version
 
 .. image:: https://img.shields.io/pypi/l/minchin.releaser.svg?style=flat&color=green
-    :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/LICENSE
+    :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/LICENSE.txt
     :alt: License
 
 .. image:: https://img.shields.io/pypi/dm/minchin.releaser.svg?style=flat
