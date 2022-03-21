@@ -1,6 +1,12 @@
 Changelog
 =========
 
+- :release:`0.8.2 <2022-03-20>`
+- :support:`-` update Readme badges.
+- :support:`-` drop (official) support for no-longer supported Python versions.
+  Thus the minimum Python version officially supported in Python 3.7.
+- :bug:`-` bump minimum version of ``Invoke`` to 1.7.0, and thus add Python
+  3.10 support.
 - :release:`0.8.1 <2021-07-07>`
 - :bug:`-` allow PEP518 builds on the test PyPI server.
 - :release:`0.8.0 <2021-07-05>`
