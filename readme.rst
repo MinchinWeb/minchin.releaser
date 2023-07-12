@@ -7,9 +7,9 @@ Tools to make releasing Python packages easier.
     :target: https://pypi.python.org/pypi/minchin.releaser/
     :alt: PyPI version number
 
-.. image:: https://img.shields.io/badge/-Changelog-success
-   :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst
-   :alt: Changelog
+.. image:: https://img.shields.io/badge/-Changelog-success?style=flat
+    :target: https://github.com/MinchinWeb/minchin.releaser/blob/master/changelog.rst
+    :alt: Changelog
 
 .. image:: https://img.shields.io/pypi/pyversions/minchin.releaser?style=flat
     :target: https://pypi.python.org/pypi/minchin.releaser/
@@ -23,7 +23,7 @@ Tools to make releasing Python packages easier.
     :target: https://pypi.python.org/pypi/minchin.releaser/
     :alt: Download Count
 
-*Minchin dot Releaser* in currently set up as an
+*Minchin dot Releaser* is currently set up as an
 `invoke <http://www.pyinvoke.org/>`_ task. It is designed to provide a single
 command to make and publish a release of your Python package. An extra
 configuration file is an one-time set up requirement to be able to make use of
@@ -103,9 +103,12 @@ should be created in the root folder of your project. If you are not using
 
     # tasks.py
 
-    import invoke
+    try:
+        from minchin.releaser import make_release
+    except ImportError:
+        print("[WARN] minchin.releaser not installed.")
 
-    from minchin.releaser import make_release
+    # your other invoke tasks...
 
 To confirm that this is working, go to the command line in the root folder
 of your project, and run:
@@ -169,6 +172,11 @@ extra_packages
 
 Step 4. Set up Invoke command shell (Windows).
 """"""""""""""""""""""""""""""""""""""""""""""
+
+.. Note::
+
+    Recent version of ``invoke`` seem to have resolved this, and this not
+    longer seems to be needed.
 
 *Minchin dot Releaser* runs certain commands at the command line. ``Invoke``,
 regardless of platform, tries to run these on ``/bin/bash`` which doesn't exist
