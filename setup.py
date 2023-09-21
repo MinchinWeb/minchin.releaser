@@ -45,17 +45,19 @@ PACKAGES = setuptools.find_packages(exclude=("vendor_src",))
 INSTALL_REQUIRES = [
     # also vendorized minchin.text >= 6.0.0
     "colorama >= 0.2.5",
-    "gitpython >= 3.0.6",
+    "gitpython >= 3.1.35",
     "invoke >= 2.0.0",  # needed to support Python 3.11
     "isort >= 5",
     "semantic_version",
     "twine >= 1.11.0",
-    "wheel",
+    "wheel >= 0.38.1",
     # for pyproject.toml projects (i.e. without a `setup.py`)
     "build",
     # sub-dependencies, minimums for security reasons
     "bleach >= 3.3.0",
-    "pygments >= 2.7.4",
+    "certifi >= 2023.7.22",
+    "pygments >= 2.15.0",
+    "requests >= 2.31.0",
     "urllib3 >= 1.26.5",
 ]
 

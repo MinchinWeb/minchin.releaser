@@ -2,6 +2,8 @@ Changelog
 =========
 
 - :feature:`-` add support for ``pyproject.toml`` based builds (PEP518 builds?)
+- :support:`11` bump several requirement's minimum version for security
+  reasons. c.f. Pull Request #12.
 - :support:`-` drop (official) support for no-longer supported Python versions.
   Thus the minimum Python version officially supported in Python 3.8.
 - :release:`0.8.2 <2022-03-20>`
