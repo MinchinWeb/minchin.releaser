@@ -46,7 +46,7 @@ INSTALL_REQUIRES = [
     # also vendorized minchin.text >= 6.0.0
     "colorama >= 0.2.5",
     "gitpython >= 3.0.6",
-    "invoke >= 1.7.0",
+    "invoke >= 2.0.0",  # needed to support Python 3.11
     "isort >= 5",
     "semantic_version",
     "twine >= 1.11.0",
@@ -103,10 +103,11 @@ CLASSIFIERS = [
     # 'Programming Language :: Python :: 3.4',
     # "Programming Language :: Python :: 3.5",
     # "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
+    # "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3 :: Only",
     "Natural Language :: English",
     "Intended Audience :: Developers",
