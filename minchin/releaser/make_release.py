@@ -228,11 +228,16 @@ def update_version_number(ctx, bump=None, ignore_prerelease=False):
     return (old_version, current_version)
 
 
-def build_distribution():
+def build_distribution(build_setup_py=True, build_pyproject=None):
     """Build distributions of the code."""
-    result = invoke.run(
-        "python setup.py sdist bdist_egg bdist_wheel", warn=True, hide=True
-    )
+    build_command = ""
+    if build_setup_py:
+        build_command = "python setup.py sdist bdist_wheel"
+    elif build_pyproject:
+        # default is to build an sdist, and then a wheel from that
+        build_command = "python -m build"
+
+    result = invoke.run(build_command, warn=True, hide=True)
     if result.ok:
         print(
             "[{}GOOD{}] Distribution built without errors.".format(
@@ -245,7 +250,7 @@ def build_distribution():
             "code...".format(ERROR_COLOR, RESET_COLOR)
         )
         print(result.stderr)
-        sys.exit(1)
+        sys.exit(3)
 
 
 def other_dependencies(ctx, server, environment):
@@ -474,6 +479,24 @@ def make_release(
     except FileNotFoundError as e:
         print(e)
         sys.exit(1)
+
+    # determine if we're doing setup.py or pyproject.toml
+    build_setup_py = None
+    build_pyproject = None
+    try:
+        check_existence("setup.py", "setup.py", relative_to=here)
+    except FileNotFoundError as e:
+        try:
+            check_existence("pyproject.toml", "pyproject.toml", relative_to=here)
+        except FileNotFoundError as e2:
+            print("""Some error message""")
+            sys.exit(2)
+        else:
+            build_pyproject = True
+            print(" "*18 + "Build using 'pyproject.toml'")
+    else:
+        build_setup_py = True
+        print(" "*18 + "Build using 'setup.py'")
     print()
 
     text.subtitle("Git -- Clean directory?")
@@ -616,7 +639,7 @@ def make_release(
     print()
 
     text.subtitle("Build Distributions")
-    build_distribution()
+    build_distribution(build_setup_py, build_pyproject)
     print()
 
     text.subtitle("Check Readme Rendering")

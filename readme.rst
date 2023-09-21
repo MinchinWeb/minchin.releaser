@@ -76,6 +76,9 @@ It is assumed:
 - source control is done using Git. The Git functionality will be ignored if
   this is not the case.
 
+*Minchin dot Releaser* will support both ``setup.py`` and ``pyproject.toml``
+(i.e. PEP 518?) based builds.
+
 Setting Up Your Project
 -----------------------
 

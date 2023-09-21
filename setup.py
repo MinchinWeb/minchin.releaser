@@ -51,6 +51,8 @@ INSTALL_REQUIRES = [
     "semantic_version",
     "twine >= 1.11.0",
     "wheel",
+    # for pyproject.toml projects (i.e. without a `setup.py`)
+    "build",
     # sub-dependencies, minimums for security reasons
     "bleach >= 3.3.0",
     "pygments >= 2.7.4",
