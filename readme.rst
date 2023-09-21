@@ -100,7 +100,7 @@ Step 2. Create a ``tasks.py`` file.
 
 This is where ``invoke`` determine was tasks are available to run. This file
 should be created in the root folder of your project. If you are not using
-``invoke`` for other tasks, this file can be two lines:
+``invoke`` for other tasks, this file can be four lines:
 
 .. code-block:: python
 
@@ -111,7 +111,7 @@ should be created in the root folder of your project. If you are not using
     except ImportError:
         print("[WARN] minchin.releaser not installed.")
 
-    # your other invoke tasks...
+    # your other Invoke tasks...
 
 To confirm that this is working, go to the command line in the root folder
 of your project, and run:
@@ -120,7 +120,7 @@ of your project, and run:
 
     $ invoke --list
 
-which will now list ``make_release`` as an available task.
+which will now list ``make-release`` as an available task.
 
 Step 3. Configure your project.
 """""""""""""""""""""""""""""""
@@ -239,10 +239,14 @@ Step 7. Upload your package.
 
 .. code-block:: sh
 
-    $ invoke make_release
+    $ invoke make-release
 
 And then work through the prompts. If this process breaks half-way through,
 you can re-start.
+
+In particular, many packages are not available on the test version of PyPI, and
+will need to iteratively be added to the configuration under the
+``extra_packages\test`` key.
 
 
 Credits
