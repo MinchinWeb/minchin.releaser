@@ -1,6 +1,8 @@
 Changelog
 =========
 
+
+- :release:`0.9.1 <2023-10-04>`
 - :bug:`-` explicitly import the ``__version__`` to test for it (rather than
   assume it is a attribute of the main module).
 - :release:`0.9.0 <2023-09-21>`
