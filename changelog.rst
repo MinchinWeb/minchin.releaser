@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- :bug:`-` explicitly import the ``__version__`` to test for it (rather than
+  assume it is a attribute of the main module).
 - :release:`0.9.0 <2023-09-21>`
 - :feature:`-` add support for ``pyproject.toml`` based builds (PEP518 builds?)
 - :support:`11` bump several requirement's minimum version for security

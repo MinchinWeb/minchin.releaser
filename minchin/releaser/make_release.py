@@ -349,6 +349,7 @@ def check_local_install(ctx, version, ext, server="local"):
             )
             # print(result.stderr)
 
+    # TODO: Allow creating these environments in a pre-determined temp directory
     # remove directory if it exists
     if (here / "env" / environment).exists():
         shutil.rmtree("env" + os.sep + environment)
@@ -403,7 +404,7 @@ def check_local_install(ctx, version, ext, server="local"):
     if os.name == "nt":
         result = invoke.run(
             "env{0}{1}{0}{2}{0}python{3} -c "
-            'exec("""import {4}\\nprint({4}.__version__)""")'.format(
+            'exec("""from {4} import __version__\\nprint(__version__)""")'.format(
                 os.sep,
                 environment,
                 VENV_BIN,
@@ -414,7 +415,7 @@ def check_local_install(ctx, version, ext, server="local"):
     else:
         result = invoke.run(
             ".{0}env{0}{1}{0}{2}{0}python{3} -c "
-            "'exec(\\\"\\\"\\\"import {4}\\nprint({4}.__version__)\\\"\\\"\\\")'".format(
+            "'exec(\\\"\\\"\\\"from {4} import __version__\\nprint(__version__)\\\"\\\"\\\")'".format(
                 os.sep,
                 environment,
                 VENV_BIN,
