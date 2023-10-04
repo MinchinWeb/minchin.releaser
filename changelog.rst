@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- :release:`0.9.0 <2023-09-21>`
 - :feature:`-` add support for ``pyproject.toml`` based builds (PEP518 builds?)
 - :support:`11` bump several requirement's minimum version for security
   reasons. c.f. Pull Request #12.

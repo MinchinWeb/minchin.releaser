@@ -46,7 +46,7 @@ INSTALL_REQUIRES = [
     # also vendorized minchin.text >= 6.0.0
     "colorama >= 0.2.5",
     "gitpython >= 3.1.35",
-    "invoke >= 2.0.0",  # needed to support Python 3.11
+    "invoke >= 2.0.0",  # min. needed to support Python 3.11
     "isort >= 5",
     "semantic_version",
     "twine >= 1.11.0",
@@ -58,7 +58,7 @@ INSTALL_REQUIRES = [
     "certifi >= 2023.7.22",
     "pygments >= 2.15.0",
     "requests >= 2.31.0",
-    "urllib3 >= 1.26.5",
+    "urllib3 >= 2.0.6",
 ]
 
 EXTRA_REQUIRES = {
